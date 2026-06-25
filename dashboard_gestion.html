@@ -6,13 +6,13 @@
 <title>Dashboard de Gestión — CORTE</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f3ff; color: #1a1a1a; min-height: 100vh; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f3ff; color: #1a1a1a; min-height: 100vh; font-size: 14px; }
 
   /* Top bar */
-  .topbar { background: #6d28d9; color: #fff; padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; }
-  .topbar h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.03em; }
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
-  .btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: background 0.15s; }
+  .topbar { background: #6d28d9; color: #fff; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar h1 { font-size: 18px; font-weight: 600; letter-spacing: 0.03em; }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .btn { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: background 0.15s; }
   .btn-light { background: rgba(255,255,255,0.15); color: #fff; }
   .btn-light:hover { background: rgba(255,255,255,0.25); }
   .btn-green { background: #059669; color: #fff; }
@@ -20,7 +20,17 @@
   .btn-save { background: #7c3aed; color: #fff; }
   .btn-save:hover { background: #6d28d9; }
 
-  /* Auth overlay */
+  /* Tabs */
+  .tabs { display: flex; gap: 0; background: #4c1d95; padding: 0 32px; border-bottom: 2px solid #7c3aed; }
+  .tab { padding: 11px 22px; font-size: 13px; font-weight: 500; color: #c4b5fd; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
+  .tab:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .tab.active { color: #fff; border-bottom-color: #a78bfa; background: rgba(255,255,255,0.12); }
+
+  /* Tab panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Auth overlay - keep below tabs section */
   #auth-overlay { position: fixed; inset: 0; background: rgba(109,40,217,0.15); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 300; }
   .auth-box { background: #fff; border-radius: 16px; padding: 40px; max-width: 460px; width: 90%; box-shadow: 0 8px 40px rgba(109,40,217,0.2); }
   .auth-logo { width: 50px; height: 50px; background: #7c3aed; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
@@ -44,43 +54,43 @@
   .steps a { color: #d97706; }
 
   /* Status */
-  #status { padding: 8px 28px; font-size: 12px; display: flex; align-items: center; gap: 8px; min-height: 34px; background: #fff; border-bottom: 1px solid #e0d9f7; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  #status { padding: 10px 32px; font-size: 13px; display: flex; align-items: center; gap: 8px; min-height: 36px; background: #fff; border-bottom: 1px solid #e0d9f7; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
   .dot-ok { background: #10b981; }
   .dot-err { background: #ef4444; }
   .dot-wait { background: #f59e0b; animation: blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   /* Main */
-  .main { padding: 20px 28px; }
+  .main { padding: 24px 32px; }
 
   /* Info chips */
-  .chips { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-  .chip { background: #fff; border: 1px solid #e0d9f7; border-radius: 8px; padding: 7px 14px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  .chip-lbl { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; }
-  .chip-val { font-weight: 600; }
+  .chips { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; align-items: center; }
+  .chip { background: #fff; border: 1px solid #e0d9f7; border-radius: 8px; padding: 9px 18px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+  .chip-lbl { font-size: 12px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; }
+  .chip-val { font-weight: 600; font-size: 15px; }
   .chip-sync { margin-left: auto; }
 
   /* Grids */
-  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
-  .g2 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 16px; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 18px; }
+  .g2 { display: grid; grid-template-columns: 1fr 2fr; gap: 18px; margin-bottom: 18px; }
   .span2 { grid-column: span 2; }
 
   /* Cards */
   .card { background: #fff; border-radius: 12px; border: 1px solid #e0d9f7; overflow: hidden; }
-  .ch { background: #6d28d9; padding: 9px 16px; }
-  .ch h3 { font-size: 11px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.07em; }
+  .ch { background: #6d28d9; padding: 11px 18px; }
+  .ch h3 { font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.07em; }
 
   /* Tables */
   table { width: 100%; border-collapse: collapse; }
-  th { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.04em; padding: 7px 14px; border-bottom: 1px solid #f3f0ff; text-align: left; }
-  td { padding: 7px 14px; font-size: 13px; color: #374151; border-bottom: 1px solid #faf8ff; }
+  th { font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.04em; padding: 9px 16px; border-bottom: 1px solid #f3f0ff; text-align: left; }
+  td { padding: 9px 16px; font-size: 14px; color: #374151; border-bottom: 1px solid #faf8ff; }
   tr:last-child td { border-bottom: none; }
   .r { text-align: right; }
 
   /* Purple rows */
   .pr { background: #7c3aed; }
-  .pr td { background: transparent; color: #fff !important; font-weight: 500; font-size: 12px; border-bottom: 1px solid #8b5cf6; padding: 6px 14px; }
+  .pr td { background: transparent; color: #fff !important; font-weight: 500; font-size: 13px; border-bottom: 1px solid #8b5cf6; padding: 8px 16px; }
   .pr:last-child td { border-bottom: none; }
 
   /* Total row */
@@ -90,27 +100,62 @@
   .zero { color: #d1d5db !important; }
 
   /* Progress */
-  .pw { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
-  .pb { height: 5px; width: 54px; background: #e9d5ff; border-radius: 3px; overflow: hidden; }
+  .pw { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+  .pb { height: 6px; width: 64px; background: #e9d5ff; border-radius: 3px; overflow: hidden; }
   .pf { height: 100%; border-radius: 3px; background: #a78bfa; transition: width 0.5s; }
   .pf-green { background: #10b981; }
-  .pv { font-weight: 600; font-size: 13px; min-width: 38px; text-align: right; }
+  .pv { font-weight: 600; font-size: 14px; min-width: 42px; text-align: right; }
 
   /* Editable */
   td.editable { cursor: pointer; }
   td.editable:hover { background: #f5f3ff; }
-  td.editable input { width: 100%; border: 1px solid #7c3aed; border-radius: 4px; padding: 2px 6px; font-size: 13px; text-align: right; outline: none; background: #fff; }
+  td.editable input { width: 100%; border: 1px solid #7c3aed; border-radius: 4px; padding: 3px 7px; font-size: 14px; text-align: right; outline: none; background: #fff; }
 
   /* Save banner */
-  #save-banner { position: fixed; bottom: 20px; right: 20px; background: #1e1b2e; color: #fff; border-radius: 10px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; font-size: 13px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); transform: translateY(100px); opacity: 0; transition: all 0.25s; z-index: 200; }
+  #save-banner { position: fixed; bottom: 20px; right: 20px; background: #1e1b2e; color: #fff; border-radius: 10px; padding: 14px 20px; display: flex; align-items: center; gap: 14px; font-size: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); transform: translateY(100px); opacity: 0; transition: all 0.25s; z-index: 200; }
   #save-banner.show { transform: translateY(0); opacity: 1; }
-  .btn-discard { background: transparent; color: #9ca3af; border: 1px solid #444; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; }
+  .btn-discard { background: transparent; color: #9ca3af; border: 1px solid #444; border-radius: 6px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
   .btn-discard:hover { background: #333; }
 
-  @media (max-width: 680px) {
+  /* ── X AGENTE tab ── */
+  .xa-filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+  .xa-select { padding: 8px 14px; border: 1px solid #d1c4f5; border-radius: 8px; font-size: 13px; color: #374151; background: #fff; outline: none; cursor: pointer; }
+  .xa-select:focus { border-color: #7c3aed; }
+
+  .xa-table-wrap { background: #fff; border-radius: 12px; border: 1px solid #e0d9f7; overflow: hidden; }
+  .xa-table-wrap table { font-size: 13px; }
+  .xa-table-wrap th { background: #6d28d9; color: #fff; font-size: 11px; padding: 10px 14px; text-align: center; border-bottom: none; letter-spacing: 0.06em; }
+  .xa-table-wrap th:first-child, .xa-table-wrap th:nth-child(2) { text-align: left; }
+  .xa-table-wrap td { padding: 9px 14px; border-bottom: 1px solid #f3f0ff; text-align: center; font-size: 13px; }
+  .xa-table-wrap td:nth-child(2) { text-align: left; font-weight: 500; }
+  .xa-table-wrap tr:last-child td { border-bottom: none; }
+  .xa-table-wrap tr:hover td { background: #faf5ff; }
+  .xa-totals td { background: #1e1b2e !important; color: #fff !important; font-weight: 700; font-size: 13px; }
+
+  .badge-si { display:inline-block; background:#059669; color:#fff; border-radius:5px; padding:2px 10px; font-size:11px; font-weight:600; }
+  .badge-no { display:inline-block; background:#ef4444; color:#fff; border-radius:5px; padding:2px 10px; font-size:11px; font-weight:600; }
+  .badge-skill { display:inline-block; border-radius:5px; padding:2px 10px; font-size:11px; font-weight:600; }
+  .badge-front { background:#6d28d9; color:#fff; }
+  .badge-scrap { background:#0e7490; color:#fff; }
+
+  .pct-cell { font-weight: 700; font-size: 13px; }
+  .pct-high { color: #059669; }
+  .pct-mid  { color: #d97706; }
+  .pct-low  { color: #ef4444; }
+
+  .xa-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+  .xa-kpi { background: #fff; border-radius: 10px; border: 1px solid #e0d9f7; padding: 14px 18px; }
+  .xa-kpi .kpi-lbl { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .xa-kpi .kpi-val { font-size: 22px; font-weight: 700; color: #6d28d9; }
+  .xa-kpi .kpi-sub { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+  @media (max-width: 720px) {
     .g3, .g2 { grid-template-columns: 1fr; }
     .span2 { grid-column: span 1; }
-    .main { padding: 14px; }
+    .main { padding: 14px 16px; }
+    .xa-kpi-row { grid-template-columns: repeat(2,1fr); }
+    .tabs { padding: 0 16px; }
+    .tab { padding: 10px 14px; font-size: 12px; }
   }
 </style>
 </head>
@@ -168,6 +213,12 @@
   </div>
 </div>
 
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('corte')">📊 CORTE</div>
+  <div class="tab" onclick="switchTab('xagente')">👤 X AGENTE</div>
+</div>
+
 <!-- STATUS -->
 <div id="status">
   <div class="dot dot-wait" id="dot"></div>
@@ -175,6 +226,7 @@
 </div>
 
 <!-- MAIN -->
+<div class="tab-panel active" id="panel-corte">
 <div class="main">
 
   <div class="chips">
@@ -270,6 +322,75 @@
   </div>
 
 </div><!-- /main -->
+</div><!-- /panel-corte -->
+
+<!-- X AGENTE PANEL -->
+<div class="tab-panel" id="panel-xagente">
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="xa-kpi-row">
+    <div class="xa-kpi">
+      <div class="kpi-lbl">Agentes activos</div>
+      <div class="kpi-val" id="xa-activos">—</div>
+      <div class="kpi-sub">de <span id="xa-total-agt">12</span> en total</div>
+    </div>
+    <div class="xa-kpi">
+      <div class="kpi-lbl">Total completadas</div>
+      <div class="kpi-val" id="xa-total-comp">—</div>
+      <div class="kpi-sub">vs meta <span id="xa-meta-total">—</span></div>
+    </div>
+    <div class="xa-kpi">
+      <div class="kpi-lbl">% Cumplimiento equipo</div>
+      <div class="kpi-val" id="xa-pct-equipo">—</div>
+      <div class="kpi-sub">meta 60 c/u</div>
+    </div>
+    <div class="xa-kpi">
+      <div class="kpi-lbl">% Corte equipo</div>
+      <div class="kpi-val" id="xa-pct-corte">—</div>
+      <div class="kpi-sub">meta corte 48 c/u</div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="xa-filters">
+    <select class="xa-select" id="xa-filter-skill" onchange="filterAgentes()">
+      <option value="">Todos los skills</option>
+      <option value="FRONT">FRONT</option>
+      <option value="SCRAPING">SCRAPING</option>
+    </select>
+    <select class="xa-select" id="xa-filter-asiste" onchange="filterAgentes()">
+      <option value="">Todos (asistencia)</option>
+      <option value="SI">SI — Asisten</option>
+      <option value="NO">NO — Ausentes</option>
+    </select>
+    <span id="xa-count" style="font-size:13px;color:#9ca3af;margin-left:4px;"></span>
+  </div>
+
+  <!-- Tabla agentes -->
+  <div class="xa-table-wrap">
+    <table id="xa-table">
+      <thead>
+        <tr>
+          <th>SKILL</th>
+          <th>AGENTE</th>
+          <th>ASISTE</th>
+          <th>COMPLETADAS</th>
+          <th>META</th>
+          <th>FALTAN</th>
+          <th>% CUMPL.</th>
+          <th>META CORTE</th>
+          <th>FALTAN CORTE</th>
+          <th>% CORTE</th>
+        </tr>
+      </thead>
+      <tbody id="xa-tbody"></tbody>
+      <tfoot id="xa-tfoot"></tfoot>
+    </table>
+  </div>
+
+</div>
+</div><!-- /panel-xagente -->
 
 <!-- SAVE BANNER -->
 <div id="save-banner">
@@ -474,6 +595,151 @@ function discardAll() {
 function showBanner(v) {
   document.getElementById('save-banner').classList.toggle('show', v);
 }
+
+// ── Tab switching ──────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['corte','xagente'][i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if (name === 'xagente') renderXAgente();
+}
+
+// ── X AGENTE data ─────────────────────────────────
+// Data mirrors the screenshot: editable, loaded from sheet tab "X AGENTE" if connected
+// Fallback: data from screenshot
+let xaData = [
+  { skill:'FRONT',    agente:'Darli Guarnizo',          asiste:'SI', comp:52, meta:60, metaCorte:48 },
+  { skill:'FRONT',    agente:'Tatiana Martinez',         asiste:'SI', comp:46, meta:60, metaCorte:48 },
+  { skill:'SCRAPING', agente:'Laura Tatiana Marin',      asiste:'SI', comp:34, meta:60, metaCorte:48 },
+  { skill:'SCRAPING', agente:'Juan Camilo Garcia',       asiste:'SI', comp:39, meta:60, metaCorte:48 },
+  { skill:'FRONT',    agente:'Sergio Zapata',            asiste:'SI', comp:28, meta:60, metaCorte:48 },
+  { skill:'SCRAPING', agente:'Michell Morales Villegas', asiste:'SI', comp:42, meta:60, metaCorte:48 },
+  { skill:'SCRAPING', agente:'Mauricio Pacichana',       asiste:'SI', comp:39, meta:60, metaCorte:48 },
+  { skill:'FRONT',    agente:'Johann Realpe',            asiste:'SI', comp:30, meta:60, metaCorte:48 },
+  { skill:'FRONT',    agente:'Maria Camila Castaño',     asiste:'SI', comp:32, meta:60, metaCorte:48 },
+  { skill:'SCRAPING', agente:'Tatiana Cediel',           asiste:'NO', comp:21, meta:0,  metaCorte:48 },
+  { skill:'FRONT',    agente:'Mariana Serna',            asiste:'NO', comp:0,  meta:0,  metaCorte:48 },
+  { skill:'SCRAPING', agente:'Laura Gasca',              asiste:'SI', comp:21, meta:60, metaCorte:48 },
+  { skill:'FRONT',    agente:'Duvan Preciado',           asiste:'NO', comp:0,  meta:0,  metaCorte:48 },
+];
+
+function pctClass(v) {
+  if (v >= 90) return 'pct-high';
+  if (v >= 60) return 'pct-mid';
+  return 'pct-low';
+}
+
+function renderXAgente() {
+  const skillF  = document.getElementById('xa-filter-skill').value;
+  const asisteF = document.getElementById('xa-filter-asiste').value;
+
+  const filtered = xaData.filter(r =>
+    (!skillF  || r.skill  === skillF) &&
+    (!asisteF || r.asiste === asisteF)
+  );
+
+  let totalComp = 0, totalMeta = 0, totalCorte = 0;
+  filtered.forEach(r => {
+    totalComp  += r.comp;
+    totalMeta  += r.meta;
+    totalCorte += r.metaCorte;
+  });
+
+  // KPIs (always full dataset)
+  const activos = xaData.filter(r => r.asiste === 'SI').length;
+  const allComp = xaData.reduce((s,r)=>s+r.comp,0);
+  const allMeta = xaData.reduce((s,r)=>s+r.meta,0);
+  const allCorte= xaData.reduce((s,r)=>s+r.metaCorte,0);
+  document.getElementById('xa-activos').textContent     = activos;
+  document.getElementById('xa-total-agt').textContent   = xaData.length;
+  document.getElementById('xa-total-comp').textContent  = allComp;
+  document.getElementById('xa-meta-total').textContent  = allMeta;
+  document.getElementById('xa-pct-equipo').textContent  = allMeta > 0 ? Math.round(allComp/allMeta*100)+'%' : '—';
+  document.getElementById('xa-pct-corte').textContent   = allCorte > 0 ? Math.round(allComp/allCorte*100)+'%' : '—';
+
+  document.getElementById('xa-count').textContent = `Mostrando ${filtered.length} de ${xaData.length} agentes`;
+
+  // Rows
+  const tbody = document.getElementById('xa-tbody');
+  tbody.innerHTML = '';
+  filtered.forEach((r, idx) => {
+    const faltan      = r.meta > 0 ? r.meta - r.comp : 0;
+    const pctCumpl    = r.meta > 0 ? Math.round(r.comp / r.meta * 100) : 0;
+    const faltanCorte = r.metaCorte - r.comp;
+    const pctCorte    = r.metaCorte > 0 ? Math.round(r.comp / r.metaCorte * 100) : 0;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="badge-skill ${r.skill==='FRONT'?'badge-front':'badge-scrap'}">${r.skill}</span></td>
+      <td>${r.agente}</td>
+      <td><span class="${r.asiste==='SI'?'badge-si':'badge-no'}">${r.asiste}</span></td>
+      <td class="xa-editable" data-idx="${idx}" data-field="comp" style="cursor:pointer;">${r.comp}</td>
+      <td>${r.meta}</td>
+      <td style="color:${faltan>0?'#ef4444':'#059669'};font-weight:600;">${faltan}</td>
+      <td><span class="pct-cell ${pctClass(pctCumpl)}">${pctCumpl}%</span></td>
+      <td>${r.metaCorte}</td>
+      <td style="color:${faltanCorte>0?'#ef4444':'#059669'};font-weight:600;">${faltanCorte}</td>
+      <td><span class="pct-cell ${pctClass(pctCorte)}">${pctCorte}%</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Totals footer — only sum activos for meta
+  const tfoot = document.getElementById('xa-tfoot');
+  const fComp   = filtered.reduce((s,r)=>s+r.comp,0);
+  const fMeta   = filtered.reduce((s,r)=>s+r.meta,0);
+  const fCorte  = filtered.reduce((s,r)=>s+r.metaCorte,0);
+  const fFaltan = fMeta - fComp;
+  const fPct    = fMeta > 0 ? Math.round(fComp/fMeta*100) : 0;
+  const fFaltanC= fCorte - fComp;
+  const fPctC   = fCorte > 0 ? Math.round(fComp/fCorte*100) : 0;
+
+  tfoot.innerHTML = `<tr class="xa-totals">
+    <td colspan="2">TOTAL (${filtered.length} agentes)</td>
+    <td></td>
+    <td>${fComp}</td>
+    <td>${fMeta}</td>
+    <td>${fFaltan}</td>
+    <td>${fPct}%</td>
+    <td>${fCorte}</td>
+    <td>${fFaltanC}</td>
+    <td>${fPctC}%</td>
+  </tr>`;
+
+  // Inline edit on completadas
+  tbody.querySelectorAll('.xa-editable').forEach(td => {
+    td.onclick = function() {
+      if (this.querySelector('input')) return;
+      const prev = this.textContent;
+      const i = +this.dataset.idx;
+      this.innerHTML = `<input type="number" value="${prev}" min="0" style="width:60px;border:1px solid #7c3aed;border-radius:4px;padding:2px 6px;font-size:13px;text-align:center;outline:none;">`;
+      const inp = this.querySelector('input');
+      inp.focus(); inp.select();
+      const commit = () => {
+        const v = inp.value.trim();
+        const n = v === '' ? +prev : +v;
+        filtered[i].comp = n;
+        // update master
+        const masterIdx = xaData.findIndex(r => r.agente === filtered[i].agente);
+        if (masterIdx >= 0) xaData[masterIdx].comp = n;
+        renderXAgente();
+      };
+      inp.onblur = commit;
+      inp.onkeydown = e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){ this.textContent=prev; } };
+    };
+  });
+}
+
+function filterAgentes() { renderXAgente(); }
+
+// ── Load also fetches X AGENTE sheet if connected ──
+const _origLoadData = loadData;
+// (extend after definition — patch render to also refresh xagente tab if visible)
+const _origRender = render;
+render = function(d) {
+  _origRender(d);
+  if (document.getElementById('panel-xagente').classList.contains('active')) renderXAgente();
+};
 
 // Auto-refresh cada 5 min
 setInterval(() => { if (accessToken) loadData(); }, 5 * 60 * 1000);
