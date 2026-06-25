@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HABI — CORTE</title>
+<title>Dashboard de Gestión — CORTE</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f3ff; color: #1a1a1a; min-height: 100vh; font-size: 14px; }
@@ -305,17 +305,17 @@
       </table>
     </div>
 
-    <!-- TOTAL col K -->
+    <!-- TOTAL col K — suma Front + Scraping calculada en JS -->
     <div class="card">
       <div class="ch"><h3>Total — Área metropolitana</h3></div>
       <table>
         <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
         <tbody>
-          <tr><td>Bogotá</td><td class="r" id="tb">—</td></tr>
-          <tr><td>Valle de Aburrá</td><td class="r" id="tv">—</td></tr>
-          <tr><td>Barranquilla</td><td class="r" id="tba">—</td></tr>
-          <tr><td>Cali</td><td class="r" id="tc">—</td></tr>
-          <tr class="tr"><td>Total</td><td class="r" id="tt">—</td></tr>
+          <tr><td>Bogotá</td><td class="r" id="tb" style="font-size:16px;font-weight:600;">—</td></tr>
+          <tr><td>Valle de Aburrá</td><td class="r" id="tv" style="font-size:16px;font-weight:600;">—</td></tr>
+          <tr><td>Barranquilla</td><td class="r" id="tba" style="font-size:16px;font-weight:600;">—</td></tr>
+          <tr><td>Cali</td><td class="r" id="tc" style="font-size:16px;font-weight:600;">—</td></tr>
+          <tr class="tr"><td>Total</td><td class="r" id="tt" style="font-size:18px;font-weight:700;">—</td></tr>
         </tbody>
       </table>
     </div>
@@ -492,6 +492,14 @@ async function loadData() {
       tb: g(3,10), tv: g(4,10), tba: g(5,10), tc: g(6,10), ttot: g(7,10),
     };
 
+    // Calcular totales como Front + Scraping (más confiable que leer col K)
+    const toN = v => { const n = parseInt(String(v).replace(/[^0-9-]/g,'')); return isNaN(n) ? 0 : n; };
+    d.tb   = toN(d.fb)   + toN(d.sb);
+    d.tv   = toN(d.fv)   + toN(d.sv);
+    d.tba  = toN(d.fba)  + toN(d.sba);
+    d.tc   = toN(d.fc)   + toN(d.sc);
+    d.ttot = toN(d.ftot) + toN(d.stot);
+
     snapshot = {...d};
     render(d);
     setStatus('ok', `Actualizado · ${new Date().toLocaleTimeString('es-CO')}`);
@@ -523,12 +531,20 @@ function render(d) {
   set('c-mcf',d.mcf); set('c-mcs',d.mcs); set('c-mct',d.mct);
   set('c-fcf',d.fcf); set('c-fcs',d.fcs); set('c-fct',d.fct);
   set('c-pcf',d.pcf); set('c-pcs',d.pcs); set('c-pct',d.pct);
-  // Front area
+  // Total area — suma Front + Scraping calculada localmente
+  const toN = v => { const n = parseInt(String(v).replace(/[^0-9-]/g,'')); return isNaN(n) ? 0 : n; };
+  const getVal = id => toN(document.getElementById(id)?.textContent);
+  const calcTotals = () => {
+    const pairs = [['fb','sb','tb'],['fv','sv','tv'],['fba','sba','tba'],['fc','sc','tc'],['ft','st','tt']];
+    pairs.forEach(([f,s,t]) => {
+      const el = document.getElementById(t);
+      if (el) el.textContent = getVal(f) + getVal(s);
+    });
+  };
   set('fb',d.fb); set('fv',d.fv); set('fba',d.fba); set('fc',d.fc); set('ft',d.ftot);
-  // Scraping area
   set('sb',d.sb); set('sv',d.sv); set('sba',d.sba); set('sc',d.sc); set('st',d.stot);
-  // Total area
-  set('tb',d.tb); set('tv',d.tv); set('tba',d.tba); set('tc',d.tc); set('tt',d.ttot);
+  calcTotals();
+  window._calcTotals = calcTotals; // exponer para uso en attachEdits
 
   // Progress bars
   const bar = (id, val) => { const el = document.getElementById(id); if(el) el.style.width = pctNum(val) + '%'; };
@@ -554,6 +570,7 @@ function attachEdits() {
           pending[this.dataset.cell] = Number(v);
           showBanner(true);
         }
+        if (window._calcTotals) window._calcTotals();
       };
       inp.onblur = commit;
       inp.onkeydown = e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){ this.textContent=prev; } };
