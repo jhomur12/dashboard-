@@ -342,23 +342,31 @@ async function fetchSheet(sheet) {
   return await res.json();
 }
 
+function formatDate(v) {
+  // Apps Script serializes Sheets dates as ISO strings
+  if (typeof v !== 'string' || !v.match(/^\d{4}-\d{2}-\d{2}T/)) return String(v);
+  const d = new Date(v);
+  if (isNaN(d)) return String(v);
+  // If UTC time is 00:00:00 → it's a pure date cell
+  const h = d.getUTCHours(), m = d.getUTCMinutes(), s = d.getUTCSeconds();
+  if (h === 0 && m === 0 && s === 0) {
+    // Pure date: show DD/MM/YYYY using UTC parts to avoid timezone shift
+    const dd = String(d.getUTCDate()).padStart(2,'0');
+    const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+    const yyyy = d.getUTCFullYear();
+    return dd + '/' + mm + '/' + yyyy;
+  }
+  // It's a time cell (1899-12-30 base): extract UTC time directly
+  const hh = String(d.getUTCHours()).padStart(2,'0');
+  const mi = String(d.getUTCMinutes()).padStart(2,'0');
+  const ss = String(d.getUTCSeconds()).padStart(2,'0');
+  return hh + ':' + mi + ':' + ss;
+}
+
 function g(r, row, col) {
   if (!r[row] || r[row][col] == null) return '—';
   const v = r[row][col];
-  // Google Sheets sends dates as ISO strings via Apps Script
-  if (typeof v === 'string' && v.match(/^\d{4}-\d{2}-\d{2}T/)) {
-    // It's a date — format as DD/MM/YYYY
-    const d = new Date(v);
-    if (!isNaN(d)) {
-      // Check if it has meaningful time (not midnight UTC = just a date)
-      const h = d.getUTCHours(), m = d.getUTCMinutes(), s = d.getUTCSeconds();
-      if (h === 0 && m === 0 && s === 0) {
-        return d.toLocaleDateString('es-CO', {day:'2-digit',month:'2-digit',year:'numeric',timeZone:'UTC'});
-      } else {
-        return d.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'America/Bogota'});
-      }
-    }
-  }
+  if (typeof v === 'string' && v.match(/^\d{4}-\d{2}-\d{2}T/)) return formatDate(v);
   return String(v);
 }
 
@@ -378,7 +386,7 @@ function pctNum(v) {
   const s = String(v).trim();
   if (s.includes('%')) return Math.min(parseInt(s)||0, 100);
   const n = parseFloat(s);
-  if (!isNaN(n)) return Math.min(n > 0 && n <= 1 ? Math.round(n*100) : Math.round(n), 100);
+  if (!isNaN(n)) return Math.min(Math.round(n * 100), 100);
   return 0;
 }
 function bar(id, val) { const el=document.getElementById(id); if(el) el.style.width=pctNum(val)+'%'; }
@@ -457,8 +465,9 @@ function toPercent(val) {
   if (s.includes('%')) return s;
   const n = parseFloat(s);
   if (!isNaN(n)) {
-    const pct = (n > 0 && n <= 1) ? Math.round(n * 100) : Math.round(n);
-    return pct + '%';
+    // Values from Sheets always come as decimals (0.56 = 56%, 1.15 = 115%)
+    // They are ALWAYS in 0..N decimal form, never already multiplied
+    return Math.round(n * 100) + '%';
   }
   return s;
 }
