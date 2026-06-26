@@ -362,18 +362,13 @@ function g(r, row, col) {
   return String(v);
 }
 
+const PCT_IDS = new Set(['c-pf','c-ps','c-pt','c-pcf','c-pcs','c-pct']);
 function set(id, val) {
   const el = document.getElementById(id);
   if (!el) return;
-  // Auto-format decimals that look like percentages (id contains 'p' and value is 0-1)
-  const isPctField = id.startsWith('c-p') || id.startsWith('c-pc');
   let display = val;
-  if (isPctField && val !== '—') {
-    const s = String(val).trim();
-    if (!s.includes('%')) {
-      const n = parseFloat(s);
-      if (!isNaN(n) && n >= 0 && n <= 1) display = Math.round(n*100) + '%';
-    }
+  if (PCT_IDS.has(id) && val !== '—') {
+    display = toPercent(val);
   }
   el.textContent = display;
   el.classList.toggle('zero', val==='0'||val===0);
