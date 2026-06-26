@@ -209,10 +209,41 @@
   .agent-search:focus { border-color: var(--orange); }
   .agent-count { margin-left: auto; font-size: 11px; color: #9ca3af; }
 
+  /* ── Page tabs nav ────────────────────────── */
+  .page-nav {
+    background: #fff;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    padding: 0 24px;
+    gap: 0;
+  }
+  .page-tab {
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #9ca3af;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .page-tab:hover { color: var(--orange); }
+  .page-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+  /* ── Page sections ────────────────────────── */
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
   @media (max-width: 700px) {
     .g2, .g3 { grid-template-columns: 1fr; }
     .main { padding: 12px; }
     .topbar { padding: 0 14px; }
+    .page-tab { padding: 10px 14px; font-size: 12px; }
   }
 </style>
 </head>
@@ -297,6 +328,15 @@
   <span id="status-msg">Esperando conexión con Google…</span>
 </div>
 
+<!-- PAGE TABS -->
+<div class="page-nav">
+  <button class="page-tab active" onclick="switchPage('corte', this)">📊 CORTE</button>
+  <button class="page-tab" onclick="switchPage('agentes', this)">👥 Agentes</button>
+</div>
+
+<!-- ══════════ PAGE: CORTE ══════════ -->
+<div id="page-corte" class="page-section active">
+
 <!-- SKILL / ASISTENCIA SWITCHER -->
 <div class="skill-bar">
   <label>Vista:</label>
@@ -315,7 +355,7 @@
   <span style="font-size:11px;color:#9ca3af;margin-left:auto;">Última sync: <b id="d-sync">—</b></span>
 </div>
 
-<!-- MAIN -->
+<!-- MAIN CORTE -->
 <div class="main">
 
   <div class="chips">
@@ -467,11 +507,16 @@
 
   </div>
 
-  <!-- AGENTES -->
-  <p class="section-title" style="margin-top:4px;">Por Agente — X AGENTE</p>
-  <div class="card" style="margin-bottom:14px;">
+</div><!-- /main corte -->
+</div><!-- /page-corte -->
+
+<!-- ══════════ PAGE: AGENTES ══════════ -->
+<div id="page-agentes" class="page-section">
+<div class="main">
+
+  <div class="card">
     <div class="ch ch-dark">
-      <h3>Gestión por Agente</h3>
+      <h3>Gestión por Agente — X AGENTE</h3>
       <span class="ch-badge" id="agent-date-badge">—</span>
     </div>
     <div class="agent-filters">
@@ -481,6 +526,11 @@
         <button class="skill-tab active" onclick="filterSkillAgent('all',this)">Todos</button>
         <button class="skill-tab" onclick="filterSkillAgent('FRONT',this)">Front</button>
         <button class="skill-tab" onclick="filterSkillAgent('SCRAPING',this)">Scraping</button>
+      </div>
+      <div class="skill-tabs" style="margin-left:4px;">
+        <button class="skill-tab active" onclick="filterAsistente('all',this)">Todos</button>
+        <button class="skill-tab" onclick="filterAsistente('SI',this)">✓ Asisten</button>
+        <button class="skill-tab" onclick="filterAsistente('NO',this)">✗ No asisten</button>
       </div>
       <span class="agent-count" id="agent-count"></span>
     </div>
@@ -496,18 +546,19 @@
             <th class="r">Faltan</th>
             <th class="r">% Cumpl.</th>
             <th class="r">Meta Corte</th>
-            <th class="r">Faltan</th>
+            <th class="r">Faltan Corte</th>
             <th class="r">% Corte</th>
           </tr>
         </thead>
         <tbody id="agent-tbody">
-          <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:20px;">Conecta Google para cargar agentes…</td></tr>
+          <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Conecta Google para cargar agentes…</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-</div><!-- /main -->
+</div>
+</div><!-- /page-agentes -->
 
 <!-- SAVE BANNER -->
 <div id="save-banner">
@@ -528,6 +579,15 @@ let pending     = {};
 let snapshot    = {};
 let currentSkill = 'all';
 let currentAsist = 'all';
+
+// ── Page navigation ────────────────────────────────
+function switchPage(page, btn) {
+  document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('page-' + page).classList.add('active');
+  if (page === 'agentes' && agentData.length === 0 && accessToken) loadAgents();
+}
 
 // ── Clock ──────────────────────────────────────────
 setInterval(() => {
@@ -808,28 +868,26 @@ function showBanner(v) {
   document.getElementById('save-banner').classList.toggle('show', v);
 }
 
-// ── Agents ─────────────────────────────────────────
 let agentData = [];
 let agentSkillFilter = 'all';
+let agentAsistFilter = 'all';
 
 async function loadAgents() {
   if (!accessToken) return;
   try {
-    const range = encodeURIComponent(`X AGENTE!A1:J50`);
+    const range = encodeURIComponent(`X AGENTE!A1:J100`);
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
     if (!res.ok) return;
     const { values: r = [] } = await res.json();
 
-    // Row 1 = fecha (A1 empty, B1=FECHA GESTION, C1=date)
     const fecha = (r[0] && r[0][2]) ? r[0][2] : '—';
     document.getElementById('agent-date-badge').textContent = fecha;
 
-    // Row 7 = headers (index 6), data starts row 8 (index 7)
     agentData = [];
     for (let i = 7; i < r.length; i++) {
       const row = r[i];
-      if (!row || !row[1]) continue; // skip empty rows
+      if (!row || !row[1]) continue;
       agentData.push({
         skill:       row[0] || '—',
         agente:      row[1] || '—',
@@ -851,7 +909,14 @@ async function loadAgents() {
 
 function filterSkillAgent(skill, btn) {
   agentSkillFilter = skill;
-  document.querySelectorAll('.agent-filters .skill-tab').forEach(b => b.classList.remove('active'));
+  btn.closest('.skill-tabs').querySelectorAll('.skill-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAgents();
+}
+
+function filterAsistente(val, btn) {
+  agentAsistFilter = val;
+  btn.closest('.skill-tabs').querySelectorAll('.skill-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderAgents();
 }
@@ -870,23 +935,24 @@ function renderAgents() {
   const tbody = document.getElementById('agent-tbody');
 
   let rows = agentData.filter(a => {
-    const matchSkill = agentSkillFilter === 'all' || a.skill.toUpperCase() === agentSkillFilter;
+    const matchSkill  = agentSkillFilter === 'all' || a.skill.toUpperCase() === agentSkillFilter;
+    const matchAsist  = agentAsistFilter === 'all' || String(a.asiste).toUpperCase() === agentAsistFilter;
     const matchSearch = !search || a.agente.toLowerCase().includes(search) || a.skill.toLowerCase().includes(search);
-    return matchSkill && matchSearch;
+    return matchSkill && matchAsist && matchSearch;
   });
 
   document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length !== 1 ? 's' : ''}`;
 
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:20px;">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Sin resultados</td></tr>`;
     return;
   }
 
   tbody.innerHTML = rows.map(a => {
-    const skillClass = a.skill.toUpperCase() === 'FRONT' ? 'badge-front' : 'badge-scraping';
+    const skillClass  = a.skill.toUpperCase() === 'FRONT' ? 'badge-front' : 'badge-scraping';
     const asisteClass = String(a.asiste).toUpperCase() === 'SI' ? 'badge-si' : 'badge-no';
-    const pctClass = pctColor(a.pctCorte);
-    const faltanColor = parseInt(a.faltanCorte) < 0 ? 'color:var(--green2);font-weight:700;' : '';
+    const pctClass    = pctColor(a.pctCorte);
+    const faltanStyle = parseInt(a.faltanCorte) < 0 ? 'color:var(--green2);font-weight:700;' : '';
     return `<tr>
       <td><span class="badge-skill ${skillClass}">${a.skill}</span></td>
       <td style="font-weight:500;color:var(--dark);">${a.agente}</td>
@@ -896,7 +962,7 @@ function renderAgents() {
       <td class="r">${a.faltan}</td>
       <td class="r">${a.pct}</td>
       <td class="r">${a.metaCorte}</td>
-      <td class="r" style="${faltanColor}">${a.faltanCorte}</td>
+      <td class="r" style="${faltanStyle}">${a.faltanCorte}</td>
       <td class="r"><span class="${pctClass}">${a.pctCorte}</span></td>
     </tr>`;
   }).join('');
