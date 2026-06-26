@@ -8,7 +8,6 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f8; color: #1a1a1a; min-height: 100vh; }
 
-  /* ── Palette ──────────────────────────────── */
   :root {
     --orange:  #F47920;
     --orange2: #F7941D;
@@ -16,169 +15,87 @@
     --green2:  #2EAD6B;
     --dark:    #1e2532;
     --mid:     #374151;
-    --soft:    #f4f6f8;
     --border:  #e5e7eb;
-    --white:   #ffffff;
   }
 
-  /* ── Topbar ───────────────────────────────── */
-  .topbar {
-    background: var(--dark);
-    color: #fff;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    border-bottom: 3px solid var(--orange);
-  }
+  /* Topbar */
+  .topbar { background: var(--dark); color: #fff; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; border-bottom: 3px solid var(--orange); }
   .topbar-brand { display: flex; align-items: center; gap: 14px; }
   .topbar-logo { height: 36px; }
-  .topbar-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); letter-spacing: 0.02em; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 14px; }
+  .topbar-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); border-left: 1px solid rgba(255,255,255,0.2); padding-left: 14px; }
   .topbar-right { display: flex; align-items: center; gap: 10px; }
   .btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
   .btn-light { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
   .btn-light:hover { background: rgba(255,255,255,0.2); }
-  .btn-green { background: var(--green2); color: #fff; }
-  .btn-green:hover { background: #259960; }
-  .btn-save { background: var(--orange); color: #fff; }
-  .btn-save:hover { background: #d96a10; }
 
-  /* ── Auth overlay ─────────────────────────── */
-  #auth-overlay {
-    position: fixed; inset: 0;
-    background: rgba(30,37,50,0.6);
-    backdrop-filter: blur(6px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 300;
-  }
-  .auth-box {
-    background: #fff;
-    border-radius: 16px;
-    padding: 36px;
-    max-width: 460px;
-    width: 90%;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
-    border-top: 4px solid var(--orange);
-  }
-  .auth-logo-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
-  .auth-logo-img { height: 52px; }
-  .auth-box h2 { font-size: 18px; text-align: center; margin-bottom: 6px; color: var(--dark); }
-  .auth-box .subtitle { font-size: 13px; color: #6b7280; text-align: center; margin-bottom: 22px; line-height: 1.6; }
-  .auth-sheet-info { background: #fef9f5; border: 1px solid #fed7aa; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; font-size: 12px; color: #92400e; line-height: 1.9; }
-  .auth-sheet-info b { color: var(--orange); font-size: 13px; }
-  .auth-sheet-info code { background: #fff7ed; color: #c2410c; padding: 1px 5px; border-radius: 3px; font-size: 11px; }
-  .steps { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; font-size: 12px; color: #166534; line-height: 1.9; }
-  .steps b { color: var(--green2); }
-  .steps a { color: var(--green2); }
-  .field-row { margin-bottom: 14px; }
-  .field-row label { display: block; font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
-  .field-row input { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 13px; outline: none; transition: border-color 0.15s; }
-  .field-row input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px #fff0e5; }
-  .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: #fff; border: 1px solid #d1d5db; border-radius: 8px; padding: 11px 20px; font-size: 14px; font-weight: 500; cursor: pointer; color: #374151; transition: background 0.15s; }
-  .btn-google:hover { background: #f9fafb; }
-  .auth-note { font-size: 11px; color: #d1d5db; text-align: center; margin-top: 12px; }
-
-  /* ── Status bar ───────────────────────────── */
+  /* Status */
   #status { padding: 7px 24px; font-size: 12px; display: flex; align-items: center; gap: 8px; min-height: 32px; background: #fff; border-bottom: 1px solid var(--border); }
   .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .dot-ok  { background: #10b981; }
-  .dot-err { background: #ef4444; }
-  .dot-wait{ background: var(--orange2); animation: blink 1s infinite; }
+  .dot-ok   { background: #10b981; }
+  .dot-err  { background: #ef4444; }
+  .dot-wait { background: var(--orange2); animation: blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  /* ── Skill switcher ───────────────────────── */
-  .skill-bar {
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    padding: 10px 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
+  /* Page tabs */
+  .page-nav { background: #fff; border-bottom: 2px solid var(--border); display: flex; padding: 0 24px; }
+  .page-tab { padding: 12px 20px; font-size: 13px; font-weight: 600; color: #9ca3af; cursor: pointer; border: none; background: transparent; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .page-tab:hover { color: var(--orange); }
+  .page-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
+  /* Skill bar */
+  .skill-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   .skill-bar label { font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
   .skill-tabs { display: flex; gap: 6px; }
-  .skill-tab {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: #fff;
-    color: var(--mid);
-    transition: all 0.15s;
-  }
+  .skill-tab { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: #fff; color: var(--mid); transition: all 0.15s; }
   .skill-tab.active { background: var(--orange); border-color: var(--orange); color: #fff; }
   .skill-tab:hover:not(.active) { border-color: var(--orange); color: var(--orange); }
   .skill-divider { width: 1px; height: 20px; background: var(--border); }
 
-  /* ── Main ─────────────────────────────────── */
+  /* Main */
   .main { padding: 18px 24px; }
 
-  /* ── Chips ────────────────────────────────── */
-  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+  /* Chips */
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
   .chip { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
   .chip-lbl { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; }
   .chip-val { font-weight: 600; color: var(--dark); }
 
-  /* ── Grids ────────────────────────────────── */
+  /* Grids */
   .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  .g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 14px; }
 
-  /* ── Cards ────────────────────────────────── */
+  /* Cards */
   .card { background: #fff; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-
-  /* Card header variants */
   .ch { padding: 9px 16px; display: flex; align-items: center; justify-content: space-between; }
   .ch h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
-  .ch-orange { background: var(--orange); }
-  .ch-orange h3 { color: #fff; }
-  .ch-green  { background: var(--green2); }
-  .ch-green h3  { color: #fff; }
-  .ch-dark   { background: var(--dark); }
-  .ch-dark h3   { color: #fff; }
-  .ch-badge { font-size: 10px; background: rgba(255,255,255,0.25); color: #fff; border-radius: 10px; padding: 2px 8px; font-weight: 600; }
+  .ch-orange { background: var(--orange); } .ch-orange h3 { color: #fff; }
+  .ch-green  { background: var(--green2); } .ch-green h3  { color: #fff; }
+  .ch-dark   { background: var(--dark);  } .ch-dark h3   { color: #fff; }
+  .ch-badge  { font-size: 10px; background: rgba(255,255,255,0.25); color: #fff; border-radius: 10px; padding: 2px 8px; font-weight: 600; }
 
-  /* ── Tables ───────────────────────────────── */
+  /* Tables */
   table { width: 100%; border-collapse: collapse; }
   th { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; padding: 7px 14px; border-bottom: 1px solid var(--border); text-align: left; }
   td { padding: 8px 14px; font-size: 13px; color: var(--mid); border-bottom: 1px solid #f9fafb; }
   tr:last-child td { border-bottom: none; }
   .r { text-align: right; }
-
-  /* Highlight rows */
   .row-key td { color: var(--dark); font-weight: 500; }
-
-  /* Total row */
-  .row-total td { font-weight: 700; color: var(--orange); background: #fff7f0; font-size: 13px; }
-
-  /* Zero */
+  .row-total td { font-weight: 700; color: var(--orange); background: #fff7f0; }
   .zero { color: #d1d5db !important; }
 
-  /* ── Progress ─────────────────────────────── */
+  /* Progress */
   .pw { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
   .pb { height: 5px; width: 52px; background: #f0fdf4; border-radius: 3px; overflow: hidden; border: 1px solid #bbf7d0; }
   .pf { height: 100%; border-radius: 3px; background: var(--green2); transition: width 0.5s; }
   .pf-orange { background: var(--orange2); }
   .pv { font-weight: 600; font-size: 13px; min-width: 36px; text-align: right; }
 
-  /* ── Editable cells ───────────────────────── */
-  td.editable { cursor: pointer; }
-  td.editable:hover { background: #fff7f0; }
-  td.editable input { width: 100%; border: 1px solid var(--orange); border-radius: 4px; padding: 2px 6px; font-size: 13px; text-align: right; outline: none; background: #fff; }
-
-  /* ── Save banner ──────────────────────────── */
-  #save-banner { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: #fff; border-radius: 10px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; font-size: 13px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); transform: translateY(100px); opacity: 0; transition: all 0.25s; z-index: 200; border-top: 3px solid var(--orange); }
-  #save-banner.show { transform: translateY(0); opacity: 1; }
-  .btn-discard { background: transparent; color: #9ca3af; border: 1px solid #444; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; }
-  .btn-discard:hover { background: #333; }
-
-  /* Section label */
+  /* Section title */
   .section-title { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; padding-left: 2px; }
 
-  /* ── Agentes table ────────────────────────── */
+  /* Agent table */
   .agent-table-wrap { overflow-x: auto; }
   .agent-table { width: 100%; border-collapse: collapse; min-width: 700px; }
   .agent-table th { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 2px solid var(--border); text-align: left; white-space: nowrap; }
@@ -188,124 +105,33 @@
   .agent-table tr:hover td { background: #fafafa; }
   .agent-table td.r { text-align: right; }
 
-  /* Skill badge */
-  .badge-skill { display: inline-block; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-skill { display: inline-block; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 2px 8px; text-transform: uppercase; }
   .badge-front    { background: #fff0e5; color: var(--orange); border: 1px solid #fdd0aa; }
   .badge-scraping { background: #f0fdf4; color: var(--green2); border: 1px solid #bbf7d0; }
-
-  /* Asiste badge */
   .badge-si  { background: #f0fdf4; color: var(--green2); font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 8px; border: 1px solid #bbf7d0; }
   .badge-no  { background: #fef2f2; color: #ef4444; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 8px; border: 1px solid #fecaca; }
+  .pct-green  { color: var(--green2); font-weight: 700; }
+  .pct-red    { color: #ef4444; font-weight: 700; }
+  .pct-orange { color: var(--orange); font-weight: 700; }
 
-  /* % corte color */
-  .pct-green { color: var(--green2); font-weight: 700; }
-  .pct-red   { color: #ef4444; font-weight: 700; }
-  .pct-orange{ color: var(--orange); font-weight: 700; }
-
-  /* Agent filter bar */
   .agent-filters { display: flex; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
   .agent-filters label { font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; }
   .agent-search { border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; outline: none; width: 180px; }
   .agent-search:focus { border-color: var(--orange); }
   .agent-count { margin-left: auto; font-size: 11px; color: #9ca3af; }
 
-  /* ── Page tabs nav ────────────────────────── */
-  .page-nav {
-    background: #fff;
-    border-bottom: 2px solid var(--border);
-    display: flex;
-    padding: 0 24px;
-    gap: 0;
-  }
-  .page-tab {
-    padding: 12px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #9ca3af;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .page-tab:hover { color: var(--orange); }
-  .page-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
-
-  /* ── Page sections ────────────────────────── */
-  .page-section { display: none; }
-  .page-section.active { display: block; }
-
   @media (max-width: 700px) {
     .g2, .g3 { grid-template-columns: 1fr; }
     .main { padding: 12px; }
     .topbar { padding: 0 14px; }
-    .page-tab { padding: 10px 14px; font-size: 12px; }
   }
 </style>
 </head>
 <body>
 
-<!-- AUTH OVERLAY -->
-<div id="auth-overlay">
-  <div class="auth-box">
-    <div class="auth-logo-wrap">
-      <!-- Asertis logo SVG inline -->
-      <svg class="auth-logo-img" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
-        <!-- Arc -->
-        <path d="M30 55 Q65 10 120 18 Q170 25 190 55" fill="none" stroke="#F47920" stroke-width="8" stroke-linecap="round"/>
-        <!-- asertis text -->
-        <text x="18" y="68" font-family="Arial,sans-serif" font-size="30" font-weight="700" fill="#2EAD6B">asertis</text>
-        <!-- "Una marca Fenalco Valle" -->
-        <text x="18" y="78" font-family="Arial,sans-serif" font-size="7.5" fill="#7DC242">Una marca Fenalco Valle</text>
-        <!-- BPS badge -->
-        <rect x="160" y="55" width="32" height="18" rx="4" fill="#1e2532"/>
-        <text x="176" y="68" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">BPS</text>
-      </svg>
-    </div>
-    <h2>Dashboard de Gestión</h2>
-    <p class="subtitle">Conecta tu cuenta de Google para sincronizar con la hoja <b>CORTE</b> en tiempo real.</p>
-
-    <div class="auth-sheet-info">
-      <b>📄 Sheet detectado:</b><br>
-      ID: <code>1P0ef2dyCrErzZ5Y_1KcC8QZWnFcXI92FDLuBL2eEeTk</code><br>
-      Hoja: <code>CORTE</code>
-    </div>
-
-    <div class="steps">
-      <b>🔧 Configuración única (5 min):</b><br>
-      1. Ir a <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a><br>
-      2. Crear proyecto → activar <b>Google Sheets API</b><br>
-      3. Credenciales → <b>OAuth 2.0 → Aplicación web</b><br>
-      4. Agregar este dominio como origen autorizado<br>
-      5. Copiar el <b>Client ID</b> aquí abajo
-    </div>
-
-    <div class="field-row">
-      <label>Google OAuth Client ID</label>
-      <input id="inp-cid" type="text" placeholder="000000000000-xxxxxxxx.apps.googleusercontent.com">
-    </div>
-
-    <button class="btn-google" onclick="startAuth()">
-      <svg width="18" height="18" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Conectar con Google
-    </button>
-    <p class="auth-note">Tus datos permanecen en tu cuenta de Google.</p>
-  </div>
-</div>
-
-<!-- TOP BAR -->
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-brand">
-    <!-- Asertis logo inline -->
     <svg class="topbar-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 44 Q52 8 100 14 Q145 20 162 44" fill="none" stroke="#F47920" stroke-width="6" stroke-linecap="round"/>
       <text x="10" y="53" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#2EAD6B">asertis</text>
@@ -316,604 +142,347 @@
     <span class="topbar-title">Dashboard CORTE</span>
   </div>
   <div class="topbar-right">
-    <span id="clock" style="font-size:12px; opacity:0.7;"></span>
-    <button class="btn btn-light" onclick="loadData()">↻ Actualizar</button>
-    <button class="btn btn-green" onclick="signOut()">Salir</button>
+    <span id="clock" style="font-size:12px;opacity:0.7;"></span>
+    <button class="btn btn-light" onclick="loadAll()">↻ Actualizar</button>
   </div>
 </div>
 
 <!-- STATUS -->
 <div id="status">
   <div class="dot dot-wait" id="dot"></div>
-  <span id="status-msg">Esperando conexión con Google…</span>
+  <span id="status-msg">Cargando datos…</span>
 </div>
 
 <!-- PAGE TABS -->
 <div class="page-nav">
-  <button class="page-tab active" onclick="switchPage('corte', this)">📊 CORTE</button>
-  <button class="page-tab" onclick="switchPage('agentes', this)">👥 Agentes</button>
+  <button class="page-tab active" onclick="switchPage('corte',this)">📊 CORTE</button>
+  <button class="page-tab" onclick="switchPage('agentes',this)">👥 Agentes</button>
 </div>
 
-<!-- ══════════ PAGE: CORTE ══════════ -->
+<!-- ══ PAGE: CORTE ══ -->
 <div id="page-corte" class="page-section active">
 
-<!-- SKILL / ASISTENCIA SWITCHER -->
-<div class="skill-bar">
-  <label>Vista:</label>
-  <div class="skill-tabs" id="skill-tabs">
-    <button class="skill-tab active" data-skill="all" onclick="switchSkill('all',this)">Todos</button>
-    <button class="skill-tab" data-skill="front" onclick="switchSkill('front',this)">Front</button>
-    <button class="skill-tab" data-skill="scraping" onclick="switchSkill('scraping',this)">Scraping</button>
-  </div>
-  <div class="skill-divider"></div>
-  <label>Tipo:</label>
-  <div class="skill-tabs" id="asist-tabs">
-    <button class="skill-tab active" data-asist="all" onclick="switchAsist('all',this)">General + Corte</button>
-    <button class="skill-tab" data-asist="general" onclick="switchAsist('general',this)">Solo General</button>
-    <button class="skill-tab" data-asist="corte" onclick="switchAsist('corte',this)">Solo Corte</button>
-  </div>
-  <span style="font-size:11px;color:#9ca3af;margin-left:auto;">Última sync: <b id="d-sync">—</b></span>
-</div>
-
-<!-- MAIN CORTE -->
-<div class="main">
-
-  <div class="chips">
-    <div class="chip"><span class="chip-lbl">Fecha</span><span class="chip-val" id="d-fecha">—</span></div>
-    <div class="chip"><span class="chip-lbl">Hora sheet</span><span class="chip-val" id="d-hora">—</span></div>
+  <div class="skill-bar">
+    <label>Vista:</label>
+    <div class="skill-tabs" id="skill-tabs">
+      <button class="skill-tab active" onclick="switchSkill('all',this)">Todos</button>
+      <button class="skill-tab" onclick="switchSkill('front',this)">Front</button>
+      <button class="skill-tab" onclick="switchSkill('scraping',this)">Scraping</button>
+    </div>
+    <div class="skill-divider"></div>
+    <label>Tipo:</label>
+    <div class="skill-tabs" id="asist-tabs">
+      <button class="skill-tab active" onclick="switchAsist('all',this)">General + Corte</button>
+      <button class="skill-tab" onclick="switchAsist('general',this)">Solo General</button>
+      <button class="skill-tab" onclick="switchAsist('corte',this)">Solo Corte</button>
+    </div>
+    <span style="font-size:11px;color:#9ca3af;margin-left:auto;">Última sync: <b id="d-sync">—</b></span>
   </div>
 
-  <!-- RESUMEN GENERAL -->
-  <div id="section-general">
-    <p class="section-title">Resumen General</p>
-    <div class="g2" style="margin-bottom:14px;">
-      <div class="card" id="card-resumen-front" data-skill="front scraping all">
-        <div class="ch ch-orange">
-          <h3>Resumen General</h3>
-          <span class="ch-badge" id="badge-resumen">FRONT + SCRAPING</span>
+  <div class="main">
+    <div class="chips">
+      <div class="chip"><span class="chip-lbl">Fecha</span><span class="chip-val" id="d-fecha">—</span></div>
+      <div class="chip"><span class="chip-lbl">Hora sheet</span><span class="chip-val" id="d-hora">—</span></div>
+    </div>
+
+    <div id="section-general">
+      <p class="section-title">Resumen General</p>
+      <div class="g2" id="g2-resumen" style="margin-bottom:14px;">
+        <div class="card" id="card-resumen">
+          <div class="ch ch-orange"><h3>Resumen General</h3><span class="ch-badge">FRONT + SCRAPING</span></div>
+          <table>
+            <thead><tr><th></th><th class="r" data-show="front all">Front</th><th class="r" data-show="scraping all">Scraping</th><th class="r">Total</th></tr></thead>
+            <tbody>
+              <tr class="row-key"><td>Completadas</td><td class="r" id="c-cf" data-show="front all">—</td><td class="r" id="c-cs" data-show="scraping all">—</td><td class="r" id="c-ct">—</td></tr>
+              <tr><td>Meta</td><td class="r" id="c-mf" data-show="front all">—</td><td class="r" id="c-ms" data-show="scraping all">—</td><td class="r" id="c-mt">—</td></tr>
+              <tr><td>Faltan</td><td class="r" id="c-ff" data-show="front all">—</td><td class="r" id="c-fs" data-show="scraping all">—</td><td class="r" id="c-ft">—</td></tr>
+              <tr><td>% Cumplimiento</td><td class="r" id="c-pf" data-show="front all">—</td><td class="r" id="c-ps" data-show="scraping all">—</td><td class="r"><div class="pw"><div class="pb"><div class="pf pf-orange" id="pb-pt"></div></div><span class="pv" id="c-pt">—</span></div></td></tr>
+            </tbody>
+          </table>
         </div>
+        <div class="card" id="card-corte">
+          <div class="ch ch-green"><h3>Corte del día</h3><span class="ch-badge">META AL CORTE</span></div>
+          <table>
+            <thead><tr><th></th><th class="r" data-show="front all">Front</th><th class="r" data-show="scraping all">Scraping</th><th class="r">Total</th></tr></thead>
+            <tbody>
+              <tr class="row-key"><td>Meta corte</td><td class="r" id="c-mcf" data-show="front all">—</td><td class="r" id="c-mcs" data-show="scraping all">—</td><td class="r" id="c-mct">—</td></tr>
+              <tr><td>Faltan</td><td class="r" id="c-fcf" data-show="front all">—</td><td class="r" id="c-fcs" data-show="scraping all">—</td><td class="r" id="c-fct">—</td></tr>
+              <tr><td>% Corte</td><td class="r" id="c-pcf" data-show="front all">—</td><td class="r" id="c-pcs" data-show="scraping all">—</td><td class="r"><div class="pw"><div class="pb"><div class="pf" id="pb-pct"></div></div><span class="pv" id="c-pct">—</span></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Área Metropolitana</p>
+    <div class="g3" id="g3-area">
+      <div class="card" id="card-front-area">
+        <div class="ch ch-orange"><h3>Front</h3></div>
         <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th class="r" id="th-front" data-show="front all">Front</th>
-              <th class="r" id="th-scraping" data-show="scraping all">Scraping</th>
-              <th class="r">Total</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
           <tbody>
-            <tr class="row-key">
-              <td>Completadas</td>
-              <td class="r" id="c-cf" data-show="front all">—</td>
-              <td class="r" id="c-cs" data-show="scraping all">—</td>
-              <td class="r" id="c-ct">—</td>
-            </tr>
-            <tr>
-              <td>Meta</td>
-              <td class="r" id="c-mf" data-show="front all">—</td>
-              <td class="r" id="c-ms" data-show="scraping all">—</td>
-              <td class="r" id="c-mt">—</td>
-            </tr>
-            <tr>
-              <td>Faltan</td>
-              <td class="r" id="c-ff" data-show="front all">—</td>
-              <td class="r" id="c-fs" data-show="scraping all">—</td>
-              <td class="r" id="c-ft">—</td>
-            </tr>
-            <tr>
-              <td>% Cumplimiento</td>
-              <td class="r" id="c-pf" data-show="front all">—</td>
-              <td class="r" id="c-ps" data-show="scraping all">—</td>
-              <td class="r"><div class="pw"><div class="pb"><div class="pf pf-orange" id="pb-pt"></div></div><span class="pv" id="c-pt">—</span></div></td>
-            </tr>
+            <tr><td>Bogotá</td><td class="r" id="fb">—</td></tr>
+            <tr><td>Valle de Aburrá</td><td class="r" id="fv">—</td></tr>
+            <tr><td>Barranquilla</td><td class="r" id="fba">—</td></tr>
+            <tr><td>Cali</td><td class="r" id="fc">—</td></tr>
+            <tr class="row-total"><td>Total</td><td class="r" id="ft">—</td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- CORTE -->
-      <div class="card" id="card-corte">
-        <div class="ch ch-green">
-          <h3>Corte del día</h3>
-          <span class="ch-badge" id="badge-corte">META AL CORTE</span>
-        </div>
+      <div class="card" id="card-scraping-area">
+        <div class="ch ch-green"><h3>Scraping</h3></div>
         <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th class="r" data-show="front all">Front</th>
-              <th class="r" data-show="scraping all">Scraping</th>
-              <th class="r">Total</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
           <tbody>
-            <tr class="row-key">
-              <td>Meta corte</td>
-              <td class="r" id="c-mcf" data-show="front all">—</td>
-              <td class="r" id="c-mcs" data-show="scraping all">—</td>
-              <td class="r" id="c-mct">—</td>
-            </tr>
-            <tr>
-              <td>Faltan</td>
-              <td class="r" id="c-fcf" data-show="front all">—</td>
-              <td class="r" id="c-fcs" data-show="scraping all">—</td>
-              <td class="r" id="c-fct">—</td>
-            </tr>
-            <tr>
-              <td>% Corte</td>
-              <td class="r" id="c-pcf" data-show="front all">—</td>
-              <td class="r" id="c-pcs" data-show="scraping all">—</td>
-              <td class="r"><div class="pw"><div class="pb"><div class="pf" id="pb-pct"></div></div><span class="pv" id="c-pct">—</span></div></td>
-            </tr>
+            <tr><td>Bogotá</td><td class="r" id="sb">—</td></tr>
+            <tr><td>Valle de Aburrá</td><td class="r" id="sv">—</td></tr>
+            <tr><td>Barranquilla</td><td class="r" id="sba">—</td></tr>
+            <tr><td>Cali</td><td class="r" id="sc">—</td></tr>
+            <tr class="row-total"><td>Total</td><td class="r" id="st">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" id="card-total-area">
+        <div class="ch ch-dark"><h3>Total — Área Metropolitana</h3></div>
+        <table>
+          <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
+          <tbody>
+            <tr><td>Bogotá</td><td class="r" id="tb">—</td></tr>
+            <tr><td>Valle de Aburrá</td><td class="r" id="tv">—</td></tr>
+            <tr><td>Barranquilla</td><td class="r" id="tba">—</td></tr>
+            <tr><td>Cali</td><td class="r" id="tc">—</td></tr>
+            <tr class="row-total"><td>Total</td><td class="r" id="tt">—</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
-
-  <!-- ÁREA METROPOLITANA -->
-  <p class="section-title">Área Metropolitana</p>
-  <div class="g3">
-
-    <!-- FRONT -->
-    <div class="card" id="card-front-area" data-skill-card="front">
-      <div class="ch ch-orange">
-        <h3>Front</h3>
-      </div>
-      <table>
-        <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
-        <tbody>
-          <tr><td>Bogotá</td><td class="r editable" id="fb" data-cell="CORTE!I4">—</td></tr>
-          <tr><td>Valle de Aburrá</td><td class="r editable" id="fv" data-cell="CORTE!I5">—</td></tr>
-          <tr><td>Barranquilla</td><td class="r editable" id="fba" data-cell="CORTE!I6">—</td></tr>
-          <tr><td>Cali</td><td class="r editable" id="fc" data-cell="CORTE!I7">—</td></tr>
-          <tr class="row-total"><td>Total</td><td class="r" id="ft">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- SCRAPING -->
-    <div class="card" id="card-scraping-area" data-skill-card="scraping">
-      <div class="ch ch-green">
-        <h3>Scraping</h3>
-      </div>
-      <table>
-        <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
-        <tbody>
-          <tr><td>Bogotá</td><td class="r editable" id="sb" data-cell="CORTE!I12">—</td></tr>
-          <tr><td>Valle de Aburrá</td><td class="r editable" id="sv" data-cell="CORTE!I13">—</td></tr>
-          <tr><td>Barranquilla</td><td class="r editable" id="sba" data-cell="CORTE!I14">—</td></tr>
-          <tr><td>Cali</td><td class="r editable" id="sc" data-cell="CORTE!I15">—</td></tr>
-          <tr class="row-total"><td>Total</td><td class="r" id="st">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- TOTAL (calculado dinámicamente) -->
-    <div class="card" id="card-total-area">
-      <div class="ch ch-dark">
-        <h3>Total — Área Metropolitana</h3>
-      </div>
-      <table>
-        <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
-        <tbody>
-          <tr><td>Bogotá</td><td class="r" id="tb">—</td></tr>
-          <tr><td>Valle de Aburrá</td><td class="r" id="tv">—</td></tr>
-          <tr><td>Barranquilla</td><td class="r" id="tba">—</td></tr>
-          <tr><td>Cali</td><td class="r" id="tc">—</td></tr>
-          <tr class="row-total"><td>Total</td><td class="r" id="tt">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-
-</div><!-- /main corte -->
 </div><!-- /page-corte -->
 
-<!-- ══════════ PAGE: AGENTES ══════════ -->
+<!-- ══ PAGE: AGENTES ══ -->
 <div id="page-agentes" class="page-section">
-<div class="main">
-
-  <div class="card">
-    <div class="ch ch-dark">
-      <h3>Gestión por Agente — X AGENTE</h3>
-      <span class="ch-badge" id="agent-date-badge">—</span>
-    </div>
-    <div class="agent-filters">
-      <label>Filtrar:</label>
-      <input class="agent-search" id="agent-search" type="text" placeholder="Buscar agente…" oninput="filterAgents()">
-      <div class="skill-tabs" style="margin-left:4px;">
-        <button class="skill-tab active" onclick="filterSkillAgent('all',this)">Todos</button>
-        <button class="skill-tab" onclick="filterSkillAgent('FRONT',this)">Front</button>
-        <button class="skill-tab" onclick="filterSkillAgent('SCRAPING',this)">Scraping</button>
+  <div class="main">
+    <div class="card">
+      <div class="ch ch-dark">
+        <h3>Gestión por Agente — X AGENTE</h3>
+        <span class="ch-badge" id="agent-date-badge">—</span>
       </div>
-      <div class="skill-tabs" style="margin-left:4px;">
-        <button class="skill-tab active" onclick="filterAsistente('all',this)">Todos</button>
-        <button class="skill-tab" onclick="filterAsistente('SI',this)">✓ Asisten</button>
-        <button class="skill-tab" onclick="filterAsistente('NO',this)">✗ No asisten</button>
+      <div class="agent-filters">
+        <label>Filtrar:</label>
+        <input class="agent-search" id="agent-search" type="text" placeholder="Buscar agente…" oninput="renderAgents()">
+        <div class="skill-tabs">
+          <button class="skill-tab active" onclick="filterSkillAgent('all',this)">Todos</button>
+          <button class="skill-tab" onclick="filterSkillAgent('FRONT',this)">Front</button>
+          <button class="skill-tab" onclick="filterSkillAgent('SCRAPING',this)">Scraping</button>
+        </div>
+        <div class="skill-tabs">
+          <button class="skill-tab active" onclick="filterAsistente('all',this)">Todos</button>
+          <button class="skill-tab" onclick="filterAsistente('SI',this)">✓ Asisten</button>
+          <button class="skill-tab" onclick="filterAsistente('NO',this)">✗ No asisten</button>
+        </div>
+        <span class="agent-count" id="agent-count"></span>
       </div>
-      <span class="agent-count" id="agent-count"></span>
-    </div>
-    <div class="agent-table-wrap">
-      <table class="agent-table">
-        <thead>
-          <tr>
-            <th>Skill</th>
-            <th>Agente</th>
-            <th class="r">Asiste</th>
-            <th class="r">Completadas</th>
-            <th class="r">Meta</th>
-            <th class="r">Faltan</th>
-            <th class="r">% Cumpl.</th>
-            <th class="r">Meta Corte</th>
-            <th class="r">Faltan Corte</th>
-            <th class="r">% Corte</th>
-          </tr>
-        </thead>
-        <tbody id="agent-tbody">
-          <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Conecta Google para cargar agentes…</td></tr>
-        </tbody>
-      </table>
+      <div class="agent-table-wrap">
+        <table class="agent-table">
+          <thead>
+            <tr>
+              <th>Skill</th><th>Agente</th><th class="r">Asiste</th>
+              <th class="r">Completadas</th><th class="r">Meta</th><th class="r">Faltan</th>
+              <th class="r">% Cumpl.</th><th class="r">Meta Corte</th>
+              <th class="r">Faltan Corte</th><th class="r">% Corte</th>
+            </tr>
+          </thead>
+          <tbody id="agent-tbody">
+            <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Cargando agentes…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-
-</div>
 </div><!-- /page-agentes -->
 
-<!-- SAVE BANNER -->
-<div id="save-banner">
-  <span>Cambios sin guardar</span>
-  <button class="btn btn-save" onclick="saveChanges()">💾 Guardar en Sheets</button>
-  <button class="btn-discard" onclick="discardAll()">Descartar</button>
-</div>
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
-const SHEET_ID   = '1P0ef2dyCrErzZ5Y_1KcC8QZWnFcXI92FDLuBL2eEeTk';
-const SHEET_NAME = 'CORTE';
-const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets';
+const SHEET_ID = '1P0ef2dyCrErzZ5Y_1KcC8QZWnFcXI92FDLuBL2eEeTk';
+const CSV_CORTE  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=CORTE`;
+const CSV_AGENTE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=X%20AGENTE`;
 
-let tokenClient = null;
-let accessToken = null;
-let pending     = {};
-let snapshot    = {};
 let currentSkill = 'all';
 let currentAsist = 'all';
+let agentData = [];
+let agentSkillFilter = 'all';
+let agentAsistFilter = 'all';
 
-// ── Page navigation ────────────────────────────────
-function switchPage(page, btn) {
-  document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('page-' + page).classList.add('active');
-  if (page === 'agentes' && agentData.length === 0 && accessToken) loadAgents();
-}
-
-// ── Clock ──────────────────────────────────────────
+// Clock
 setInterval(() => {
   document.getElementById('clock').textContent =
     new Date().toLocaleString('es-CO', { dateStyle:'short', timeStyle:'medium' });
 }, 1000);
 
-// ── Skill / Asistencia switcher ────────────────────
+// Page navigation
+function switchPage(page, btn) {
+  document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('page-' + page).classList.add('active');
+}
+
+// Skill/Asist filters
 function switchSkill(skill, btn) {
   currentSkill = skill;
   document.querySelectorAll('#skill-tabs .skill-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   applyFilters();
 }
-
 function switchAsist(asist, btn) {
   currentAsist = asist;
   document.querySelectorAll('#asist-tabs .skill-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   applyFilters();
 }
-
 function applyFilters() {
-  // Show/hide skill columns (cells with data-show)
   document.querySelectorAll('[data-show]').forEach(el => {
-    const shows = el.getAttribute('data-show').split(' ');
-    el.style.display = shows.includes(currentSkill) ? '' : 'none';
+    el.style.display = el.getAttribute('data-show').split(' ').includes(currentSkill) ? '' : 'none';
   });
+  const fc = document.getElementById('card-front-area');
+  const sc = document.getElementById('card-scraping-area');
+  const tc = document.getElementById('card-total-area');
+  if (currentSkill === 'all')      { fc.style.display=''; sc.style.display=''; tc.style.display=''; document.getElementById('g3-area').style.gridTemplateColumns='repeat(3,1fr)'; }
+  else if (currentSkill === 'front')  { fc.style.display=''; sc.style.display='none'; tc.style.display='none'; document.getElementById('g3-area').style.gridTemplateColumns='1fr'; }
+  else                              { fc.style.display='none'; sc.style.display=''; tc.style.display='none'; document.getElementById('g3-area').style.gridTemplateColumns='1fr'; }
 
-  // Show/hide area cards
-  const frontCard    = document.getElementById('card-front-area');
-  const scrapingCard = document.getElementById('card-scraping-area');
-  const totalCard    = document.getElementById('card-total-area');
-
-  if (currentSkill === 'all') {
-    frontCard.style.display = '';
-    scrapingCard.style.display = '';
-    totalCard.style.display = '';
-  } else if (currentSkill === 'front') {
-    frontCard.style.display = '';
-    scrapingCard.style.display = 'none';
-    totalCard.style.display = 'none';
-  } else {
-    frontCard.style.display = 'none';
-    scrapingCard.style.display = '';
-    totalCard.style.display = 'none';
-  }
-
-  // Show/hide resumen sections
-  const secGeneral = document.getElementById('section-general');
-  const cardCorte  = document.getElementById('card-corte');
-  const cardResumen = document.getElementById('card-resumen-front');
-
-  if (currentAsist === 'all') {
-    secGeneral.style.display = '';
-    cardResumen.style.display = '';
-    cardCorte.style.display = '';
-  } else if (currentAsist === 'general') {
-    secGeneral.style.display = '';
-    cardResumen.style.display = '';
-    cardCorte.style.display = 'none';
-  } else {
-    secGeneral.style.display = '';
-    cardResumen.style.display = 'none';
-    cardCorte.style.display = '';
-  }
-
-  // Update grid columns dynamically
-  const g2 = secGeneral.querySelector('.g2');
-  if (currentAsist === 'general' || currentAsist === 'corte') {
-    g2.style.gridTemplateColumns = '1fr';
-  } else {
-    g2.style.gridTemplateColumns = '1fr 1fr';
-  }
-
-  const g3 = document.querySelector('.g3');
-  if (currentSkill === 'all') {
-    g3.style.gridTemplateColumns = 'repeat(3,1fr)';
-  } else {
-    g3.style.gridTemplateColumns = '1fr';
-  }
+  const cr = document.getElementById('card-resumen');
+  const cc = document.getElementById('card-corte');
+  const g2 = document.getElementById('g2-resumen');
+  if (currentAsist === 'all')     { cr.style.display=''; cc.style.display=''; g2.style.gridTemplateColumns='1fr 1fr'; }
+  else if (currentAsist==='general'){ cr.style.display=''; cc.style.display='none'; g2.style.gridTemplateColumns='1fr'; }
+  else                            { cr.style.display='none'; cc.style.display=''; g2.style.gridTemplateColumns='1fr'; }
 }
 
-// ── Auth ───────────────────────────────────────────
-function startAuth() {
-  const cid = document.getElementById('inp-cid').value.trim();
-  if (!cid) { alert('Ingresa tu Client ID de Google OAuth.'); return; }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: cid,
-    scope: SCOPES,
-    callback(resp) {
-      if (resp.error) { setStatus('err', 'Error de auth: ' + resp.error); return; }
-      accessToken = resp.access_token;
-      document.getElementById('auth-overlay').style.display = 'none';
-      setStatus('ok', 'Conectado con Google ✓');
-      loadData();
-      loadAgents();
+// Parse CSV (handles quoted fields)
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.split('\n');
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
     }
-  });
-  tokenClient.requestAccessToken();
+    cols.push(cur.trim());
+    rows.push(cols);
+  }
+  return rows;
 }
 
-function signOut() {
-  if (accessToken) { google.accounts.oauth2.revoke(accessToken); accessToken = null; }
-  document.getElementById('auth-overlay').style.display = 'flex';
-  setStatus('wait', 'Sesión cerrada.');
-}
-
-// ── Status ─────────────────────────────────────────
+// Status
 function setStatus(type, msg) {
   const d = document.getElementById('dot');
   d.className = 'dot ' + (type==='ok'?'dot-ok':type==='err'?'dot-err':'dot-wait');
   document.getElementById('status-msg').textContent = msg;
 }
 
-// ── Load from Sheets ───────────────────────────────
-async function loadData() {
-  if (!accessToken) { setStatus('err', 'No hay sesión activa.'); return; }
-  setStatus('wait', 'Cargando datos…');
+// Load CORTE
+async function loadCorte() {
   try {
-    const range = encodeURIComponent(`${SHEET_NAME}!A1:L20`);
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}`;
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || res.statusText); }
-    const { values: r = [] } = await res.json();
+    const res = await fetch(CSV_CORTE + '&_=' + Date.now());
+    if (!res.ok) throw new Error('No se pudo cargar CORTE');
+    const text = await res.text();
+    const r = parseCSV(text);
+    const g = (row, col) => (r[row] && r[row][col] != null) ? r[row][col].replace(/^"|"$/g,'') : '—';
 
-    const g = (row, col) => (r[row] && r[row][col] != null) ? r[row][col] : '—';
+    document.getElementById('d-fecha').textContent = g(0,1);
+    document.getElementById('d-hora').textContent  = g(0,4);
 
-    const d = {
-      fecha: g(0,1), hora: g(0,4),
-      cf: g(3,1), cs: g(3,2), ct: g(3,3),
-      mf: g(4,1), ms: g(4,2), mt: g(4,3),
-      ff: g(5,1), fs: g(5,2), ft: g(5,3),
-      pf: g(6,1), ps: g(6,2), pt: g(6,3),
-      mcf:g(8,1), mcs:g(8,2), mct:g(8,3),
-      fcf:g(9,1), fcs:g(9,2), fct:g(9,3),
-      pcf:g(10,1),pcs:g(10,2),pct:g(10,3),
-      fb: g(3,8), fv: g(4,8), fba: g(5,8), fc: g(6,8), ftot: g(7,8),
-      sb: g(11,8), sv: g(12,8), sba: g(13,8), sc: g(14,8), stot: g(15,8),
-      // Total área: calculated client-side
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = val;
+      el.classList.toggle('zero', val==='0'||val===0);
     };
 
-    // Calculate Total área metropolitana client-side
-    const num = v => parseInt(String(v).replace(/[^0-9]/g,'')) || 0;
-    d.tb   = num(d.fb)  + num(d.sb);
-    d.tv   = num(d.fv)  + num(d.sv);
-    d.tba  = num(d.fba) + num(d.sba);
-    d.tc   = num(d.fc)  + num(d.sc);
-    d.ttot = d.tb + d.tv + d.tba + d.tc;
+    set('c-cf',g(3,1)); set('c-cs',g(3,2)); set('c-ct',g(3,3));
+    set('c-mf',g(4,1)); set('c-ms',g(4,2)); set('c-mt',g(4,3));
+    set('c-ff',g(5,1)); set('c-fs',g(5,2)); set('c-ft',g(5,3));
+    set('c-pf',g(6,1)); set('c-ps',g(6,2)); set('c-pt',g(6,3));
+    set('c-mcf',g(8,1));set('c-mcs',g(8,2));set('c-mct',g(8,3));
+    set('c-fcf',g(9,1));set('c-fcs',g(9,2));set('c-fct',g(9,3));
+    set('c-pcf',g(10,1));set('c-pcs',g(10,2));set('c-pct',g(10,3));
 
-    snapshot = {...d};
-    render(d);
-    setStatus('ok', `Actualizado · ${new Date().toLocaleTimeString('es-CO')}`);
-    document.getElementById('d-sync').textContent = new Date().toLocaleTimeString('es-CO');
-    loadAgents();
+    // Front área (col I = index 8)
+    set('fb',g(3,8)); set('fv',g(4,8)); set('fba',g(5,8)); set('fc',g(6,8)); set('ft',g(7,8));
+    // Scraping área (rows 11-15)
+    set('sb',g(11,8)); set('sv',g(12,8)); set('sba',g(13,8)); set('sc',g(14,8)); set('st',g(15,8));
+
+    // Total calculado
+    const num = v => parseInt(String(v).replace(/[^0-9\-]/g,'')) || 0;
+    const tb = num(g(3,8)) + num(g(11,8));
+    const tv = num(g(4,8)) + num(g(12,8));
+    const tba= num(g(5,8)) + num(g(13,8));
+    const tc = num(g(6,8)) + num(g(14,8));
+    set('tb',tb); set('tv',tv); set('tba',tba); set('tc',tc); set('tt',tb+tv+tba+tc);
+
+    const pctNum = v => Math.min(parseInt(String(v).replace('%',''))||0, 100);
+    const bar = (id,val) => { const el=document.getElementById(id); if(el) el.style.width=pctNum(val)+'%'; };
+    bar('pb-pt',g(6,3)); bar('pb-pct',g(10,3));
+
+    applyFilters();
   } catch(e) {
-    setStatus('err', 'Error: ' + e.message);
+    setStatus('err', 'Error CORTE: ' + e.message);
+    throw e;
   }
 }
 
-function pctNum(v) { return Math.min(parseInt(String(v).replace('%','')) || 0, 100); }
-
-function render(d) {
-  document.getElementById('d-fecha').textContent = d.fecha;
-  document.getElementById('d-hora').textContent  = d.hora;
-
-  const set = (id, val) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = val;
-    el.classList.toggle('zero', val === '0' || val === 0);
-  };
-
-  // Resumen
-  set('c-cf',d.cf); set('c-cs',d.cs); set('c-ct',d.ct);
-  set('c-mf',d.mf); set('c-ms',d.ms); set('c-mt',d.mt);
-  set('c-ff',d.ff); set('c-fs',d.fs); set('c-ft',d.ft);
-  set('c-pf',d.pf); set('c-ps',d.ps); set('c-pt',d.pt);
-  // Corte
-  set('c-mcf',d.mcf); set('c-mcs',d.mcs); set('c-mct',d.mct);
-  set('c-fcf',d.fcf); set('c-fcs',d.fcs); set('c-fct',d.fct);
-  set('c-pcf',d.pcf); set('c-pcs',d.pcs); set('c-pct',d.pct);
-  // Front área
-  set('fb',d.fb); set('fv',d.fv); set('fba',d.fba); set('fc',d.fc); set('ft',d.ftot);
-  // Scraping área
-  set('sb',d.sb); set('sv',d.sv); set('sba',d.sba); set('sc',d.sc); set('st',d.stot);
-  // Total área (calculado)
-  set('tb', d.tb === 0 ? '0' : d.tb);
-  set('tv', d.tv === 0 ? '0' : d.tv);
-  set('tba',d.tba=== 0 ? '0' : d.tba);
-  set('tc', d.tc === 0 ? '0' : d.tc);
-  set('tt', d.ttot=== 0 ? '0' : d.ttot);
-
-  // Progress bars
-  const bar = (id, val) => { const el = document.getElementById(id); if(el) el.style.width = pctNum(val) + '%'; };
-  bar('pb-pt', d.pt);
-  bar('pb-pct',d.pct);
-
-  attachEdits();
-  applyFilters();
-}
-
-// ── Inline editing ─────────────────────────────────
-function attachEdits() {
-  document.querySelectorAll('td.editable').forEach(td => {
-    td.onclick = function() {
-      if (this.querySelector('input')) return;
-      const prev = this.textContent;
-      this.innerHTML = `<input type="number" value="${prev === '—' ? '' : prev}" min="0">`;
-      const inp = this.querySelector('input');
-      inp.focus(); inp.select();
-      const commit = () => {
-        const v = inp.value.trim();
-        this.textContent = v === '' ? prev : v;
-        if (v !== '' && v !== prev) {
-          pending[this.dataset.cell] = Number(v);
-          showBanner(true);
-          // Recalculate totals after edit
-          recalcTotals();
-        }
-      };
-      inp.onblur = commit;
-      inp.onkeydown = e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){ this.textContent=prev; } };
-    };
-  });
-}
-
-function recalcTotals() {
-  const getVal = id => {
-    const el = document.getElementById(id);
-    if (!el) return 0;
-    return parseInt(el.textContent) || 0;
-  };
-  const tb = getVal('fb') + getVal('sb');
-  const tv = getVal('fv') + getVal('sv');
-  const tba= getVal('fba')+ getVal('sba');
-  const tc = getVal('fc') + getVal('sc');
-  const tt = tb + tv + tba + tc;
-
-  ['tb','tv','tba','tc','tt'].forEach((id,i) => {
-    const el = document.getElementById(id);
-    if(el) el.textContent = [tb,tv,tba,tc,tt][i];
-  });
-}
-
-// ── Save to Sheets ─────────────────────────────────
-async function saveChanges() {
-  if (!accessToken) { setStatus('err', 'No hay sesión activa.'); return; }
-  if (!Object.keys(pending).length) { showBanner(false); return; }
-  setStatus('wait', 'Guardando…');
+// Load AGENTES
+async function loadAgentes() {
   try {
-    const data = Object.entries(pending).map(([range, value]) => ({ range, values: [[value]] }));
-    const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values:batchUpdate`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ valueInputOption: 'USER_ENTERED', data })
-      }
-    );
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || res.statusText); }
-    pending = {};
-    showBanner(false);
-    setStatus('ok', `Guardado ✓ · ${new Date().toLocaleTimeString('es-CO')}`);
-    setTimeout(loadData, 600);
-  } catch(e) {
-    setStatus('err', 'Error al guardar: ' + e.message);
-  }
-}
+    const res = await fetch(CSV_AGENTE + '&_=' + Date.now());
+    if (!res.ok) throw new Error('No se pudo cargar X AGENTE');
+    const text = await res.text();
+    const r = parseCSV(text);
 
-function discardAll() {
-  pending = {};
-  render(snapshot);
-  showBanner(false);
-}
-
-function showBanner(v) {
-  document.getElementById('save-banner').classList.toggle('show', v);
-}
-
-let agentData = [];
-let agentSkillFilter = 'all';
-let agentAsistFilter = 'all';
-
-async function loadAgents() {
-  if (!accessToken) return;
-  try {
-    const range = encodeURIComponent(`X AGENTE!A1:J100`);
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}`;
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
-    if (!res.ok) return;
-    const { values: r = [] } = await res.json();
-
-    const fecha = (r[0] && r[0][2]) ? r[0][2] : '—';
+    const fecha = (r[0] && r[0][2]) ? r[0][2].replace(/^"|"$/g,'') : '—';
     document.getElementById('agent-date-badge').textContent = fecha;
 
     agentData = [];
     for (let i = 7; i < r.length; i++) {
       const row = r[i];
-      if (!row || !row[1]) continue;
+      if (!row || !row[1] || row[1].replace(/"/g,'').trim() === '') continue;
       agentData.push({
-        skill:       row[0] || '—',
-        agente:      row[1] || '—',
-        asiste:      row[2] || '—',
-        completadas: row[3] || '—',
-        meta:        row[4] || '—',
-        faltan:      row[5] || '—',
-        pct:         row[6] || '—',
-        metaCorte:   row[7] || '—',
-        faltanCorte: row[8] || '—',
-        pctCorte:    row[9] || '—',
+        skill:       row[0]||'—', agente:      row[1]||'—',
+        asiste:      row[2]||'—', completadas: row[3]||'—',
+        meta:        row[4]||'—', faltan:      row[5]||'—',
+        pct:         row[6]||'—', metaCorte:   row[7]||'—',
+        faltanCorte: row[8]||'—', pctCorte:    row[9]||'—',
       });
     }
     renderAgents();
   } catch(e) {
-    console.error('Error loading agents:', e);
+    setStatus('err', 'Error Agentes: ' + e.message);
+    throw e;
   }
 }
 
+async function loadAll() {
+  setStatus('wait', 'Actualizando…');
+  try {
+    await Promise.all([loadCorte(), loadAgentes()]);
+    const t = new Date().toLocaleTimeString('es-CO');
+    document.getElementById('d-sync').textContent = t;
+    setStatus('ok', 'Actualizado · ' + t);
+  } catch(e) { /* error already set */ }
+}
+
+// Agent filters
 function filterSkillAgent(skill, btn) {
   agentSkillFilter = skill;
   btn.closest('.skill-tabs').querySelectorAll('.skill-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderAgents();
 }
-
 function filterAsistente(val, btn) {
   agentAsistFilter = val;
   btn.closest('.skill-tabs').querySelectorAll('.skill-tab').forEach(b => b.classList.remove('active'));
@@ -921,54 +490,55 @@ function filterAsistente(val, btn) {
   renderAgents();
 }
 
-function filterAgents() { renderAgents(); }
-
 function pctColor(val) {
-  const n = parseInt(String(val).replace('%','')) || 0;
-  if (n >= 100) return 'pct-green';
-  if (n >= 80)  return 'pct-orange';
-  return 'pct-red';
+  const n = parseInt(String(val).replace('%',''))||0;
+  return n>=100?'pct-green':n>=80?'pct-orange':'pct-red';
 }
 
+function clean(v) { return String(v).replace(/^"|"$/g,'').trim(); }
+
 function renderAgents() {
-  const search = (document.getElementById('agent-search').value || '').toLowerCase();
-  const tbody = document.getElementById('agent-tbody');
-
-  let rows = agentData.filter(a => {
-    const matchSkill  = agentSkillFilter === 'all' || a.skill.toUpperCase() === agentSkillFilter;
-    const matchAsist  = agentAsistFilter === 'all' || String(a.asiste).toUpperCase() === agentAsistFilter;
-    const matchSearch = !search || a.agente.toLowerCase().includes(search) || a.skill.toLowerCase().includes(search);
-    return matchSkill && matchAsist && matchSearch;
+  const search = (document.getElementById('agent-search').value||'').toLowerCase();
+  const tbody  = document.getElementById('agent-tbody');
+  const rows = agentData.filter(a => {
+    const sk = clean(a.skill).toUpperCase();
+    const as = clean(a.asiste).toUpperCase();
+    return (agentSkillFilter==='all' || sk===agentSkillFilter)
+        && (agentAsistFilter==='all' || as===agentAsistFilter)
+        && (!search || clean(a.agente).toLowerCase().includes(search) || sk.toLowerCase().includes(search));
   });
-
-  document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length !== 1 ? 's' : ''}`;
-
+  document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length!==1?'s':''}`;
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Sin resultados</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Sin resultados</td></tr>`;
     return;
   }
-
   tbody.innerHTML = rows.map(a => {
-    const skillClass  = a.skill.toUpperCase() === 'FRONT' ? 'badge-front' : 'badge-scraping';
-    const asisteClass = String(a.asiste).toUpperCase() === 'SI' ? 'badge-si' : 'badge-no';
-    const pctClass    = pctColor(a.pctCorte);
-    const faltanStyle = parseInt(a.faltanCorte) < 0 ? 'color:var(--green2);font-weight:700;' : '';
+    const sk = clean(a.skill).toUpperCase();
+    const as = clean(a.asiste).toUpperCase();
+    const skillCls  = sk==='FRONT'?'badge-front':'badge-scraping';
+    const asisteCls = as==='SI'?'badge-si':'badge-no';
+    const pctCls    = pctColor(a.pctCorte);
+    const faltanSt  = parseInt(clean(a.faltanCorte))<0?'color:var(--green2);font-weight:700;':'';
     return `<tr>
-      <td><span class="badge-skill ${skillClass}">${a.skill}</span></td>
-      <td style="font-weight:500;color:var(--dark);">${a.agente}</td>
-      <td class="r"><span class="${asisteClass}">${a.asiste}</span></td>
-      <td class="r">${a.completadas}</td>
-      <td class="r">${a.meta}</td>
-      <td class="r">${a.faltan}</td>
-      <td class="r">${a.pct}</td>
-      <td class="r">${a.metaCorte}</td>
-      <td class="r" style="${faltanStyle}">${a.faltanCorte}</td>
-      <td class="r"><span class="${pctClass}">${a.pctCorte}</span></td>
+      <td><span class="badge-skill ${skillCls}">${clean(a.skill)}</span></td>
+      <td style="font-weight:500;color:var(--dark);">${clean(a.agente)}</td>
+      <td class="r"><span class="${asisteCls}">${clean(a.asiste)}</span></td>
+      <td class="r">${clean(a.completadas)}</td>
+      <td class="r">${clean(a.meta)}</td>
+      <td class="r">${clean(a.faltan)}</td>
+      <td class="r">${clean(a.pct)}</td>
+      <td class="r">${clean(a.metaCorte)}</td>
+      <td class="r" style="${faltanSt}">${clean(a.faltanCorte)}</td>
+      <td class="r"><span class="${pctCls}">${clean(a.pctCorte)}</span></td>
     </tr>`;
   }).join('');
 }
 
-setInterval(() => { if (accessToken) loadData(); }, 5 * 60 * 1000);
+// Auto-refresh cada 5 min
+setInterval(loadAll, 5 * 60 * 1000);
+
+// Carga inicial
+loadAll();
 </script>
 </body>
 </html>
