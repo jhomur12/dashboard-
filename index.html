@@ -178,6 +178,37 @@
   /* Section label */
   .section-title { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; padding-left: 2px; }
 
+  /* ── Agentes table ────────────────────────── */
+  .agent-table-wrap { overflow-x: auto; }
+  .agent-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  .agent-table th { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 2px solid var(--border); text-align: left; white-space: nowrap; }
+  .agent-table th.r { text-align: right; }
+  .agent-table td { padding: 8px 12px; font-size: 13px; color: var(--mid); border-bottom: 1px solid #f9fafb; white-space: nowrap; }
+  .agent-table tr:last-child td { border-bottom: none; }
+  .agent-table tr:hover td { background: #fafafa; }
+  .agent-table td.r { text-align: right; }
+
+  /* Skill badge */
+  .badge-skill { display: inline-block; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-front    { background: #fff0e5; color: var(--orange); border: 1px solid #fdd0aa; }
+  .badge-scraping { background: #f0fdf4; color: var(--green2); border: 1px solid #bbf7d0; }
+
+  /* Asiste badge */
+  .badge-si  { background: #f0fdf4; color: var(--green2); font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 8px; border: 1px solid #bbf7d0; }
+  .badge-no  { background: #fef2f2; color: #ef4444; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 2px 8px; border: 1px solid #fecaca; }
+
+  /* % corte color */
+  .pct-green { color: var(--green2); font-weight: 700; }
+  .pct-red   { color: #ef4444; font-weight: 700; }
+  .pct-orange{ color: var(--orange); font-weight: 700; }
+
+  /* Agent filter bar */
+  .agent-filters { display: flex; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .agent-filters label { font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; }
+  .agent-search { border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; outline: none; width: 180px; }
+  .agent-search:focus { border-color: var(--orange); }
+  .agent-count { margin-left: auto; font-size: 11px; color: #9ca3af; }
+
   @media (max-width: 700px) {
     .g2, .g3 { grid-template-columns: 1fr; }
     .main { padding: 12px; }
@@ -436,6 +467,46 @@
 
   </div>
 
+  <!-- AGENTES -->
+  <p class="section-title" style="margin-top:4px;">Por Agente — X AGENTE</p>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="ch ch-dark">
+      <h3>Gestión por Agente</h3>
+      <span class="ch-badge" id="agent-date-badge">—</span>
+    </div>
+    <div class="agent-filters">
+      <label>Filtrar:</label>
+      <input class="agent-search" id="agent-search" type="text" placeholder="Buscar agente…" oninput="filterAgents()">
+      <div class="skill-tabs" style="margin-left:4px;">
+        <button class="skill-tab active" onclick="filterSkillAgent('all',this)">Todos</button>
+        <button class="skill-tab" onclick="filterSkillAgent('FRONT',this)">Front</button>
+        <button class="skill-tab" onclick="filterSkillAgent('SCRAPING',this)">Scraping</button>
+      </div>
+      <span class="agent-count" id="agent-count"></span>
+    </div>
+    <div class="agent-table-wrap">
+      <table class="agent-table">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Agente</th>
+            <th class="r">Asiste</th>
+            <th class="r">Completadas</th>
+            <th class="r">Meta</th>
+            <th class="r">Faltan</th>
+            <th class="r">% Cumpl.</th>
+            <th class="r">Meta Corte</th>
+            <th class="r">Faltan</th>
+            <th class="r">% Corte</th>
+          </tr>
+        </thead>
+        <tbody id="agent-tbody">
+          <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:20px;">Conecta Google para cargar agentes…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- SAVE BANNER -->
@@ -553,6 +624,7 @@ function startAuth() {
       document.getElementById('auth-overlay').style.display = 'none';
       setStatus('ok', 'Conectado con Google ✓');
       loadData();
+      loadAgents();
     }
   });
   tokenClient.requestAccessToken();
@@ -610,6 +682,7 @@ async function loadData() {
     render(d);
     setStatus('ok', `Actualizado · ${new Date().toLocaleTimeString('es-CO')}`);
     document.getElementById('d-sync').textContent = new Date().toLocaleTimeString('es-CO');
+    loadAgents();
   } catch(e) {
     setStatus('err', 'Error: ' + e.message);
   }
@@ -733,6 +806,100 @@ function discardAll() {
 
 function showBanner(v) {
   document.getElementById('save-banner').classList.toggle('show', v);
+}
+
+// ── Agents ─────────────────────────────────────────
+let agentData = [];
+let agentSkillFilter = 'all';
+
+async function loadAgents() {
+  if (!accessToken) return;
+  try {
+    const range = encodeURIComponent(`X AGENTE!A1:J50`);
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+    if (!res.ok) return;
+    const { values: r = [] } = await res.json();
+
+    // Row 1 = fecha (A1 empty, B1=FECHA GESTION, C1=date)
+    const fecha = (r[0] && r[0][2]) ? r[0][2] : '—';
+    document.getElementById('agent-date-badge').textContent = fecha;
+
+    // Row 7 = headers (index 6), data starts row 8 (index 7)
+    agentData = [];
+    for (let i = 7; i < r.length; i++) {
+      const row = r[i];
+      if (!row || !row[1]) continue; // skip empty rows
+      agentData.push({
+        skill:       row[0] || '—',
+        agente:      row[1] || '—',
+        asiste:      row[2] || '—',
+        completadas: row[3] || '—',
+        meta:        row[4] || '—',
+        faltan:      row[5] || '—',
+        pct:         row[6] || '—',
+        metaCorte:   row[7] || '—',
+        faltanCorte: row[8] || '—',
+        pctCorte:    row[9] || '—',
+      });
+    }
+    renderAgents();
+  } catch(e) {
+    console.error('Error loading agents:', e);
+  }
+}
+
+function filterSkillAgent(skill, btn) {
+  agentSkillFilter = skill;
+  document.querySelectorAll('.agent-filters .skill-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAgents();
+}
+
+function filterAgents() { renderAgents(); }
+
+function pctColor(val) {
+  const n = parseInt(String(val).replace('%','')) || 0;
+  if (n >= 100) return 'pct-green';
+  if (n >= 80)  return 'pct-orange';
+  return 'pct-red';
+}
+
+function renderAgents() {
+  const search = (document.getElementById('agent-search').value || '').toLowerCase();
+  const tbody = document.getElementById('agent-tbody');
+
+  let rows = agentData.filter(a => {
+    const matchSkill = agentSkillFilter === 'all' || a.skill.toUpperCase() === agentSkillFilter;
+    const matchSearch = !search || a.agente.toLowerCase().includes(search) || a.skill.toLowerCase().includes(search);
+    return matchSkill && matchSearch;
+  });
+
+  document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length !== 1 ? 's' : ''}`;
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:20px;">Sin resultados</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(a => {
+    const skillClass = a.skill.toUpperCase() === 'FRONT' ? 'badge-front' : 'badge-scraping';
+    const asisteClass = String(a.asiste).toUpperCase() === 'SI' ? 'badge-si' : 'badge-no';
+    const pctClass = pctColor(a.pctCorte);
+    const faltanColor = parseInt(a.faltanCorte) < 0 ? 'color:var(--green2);font-weight:700;' : '';
+    return `<tr>
+      <td><span class="badge-skill ${skillClass}">${a.skill}</span></td>
+      <td style="font-weight:500;color:var(--dark);">${a.agente}</td>
+      <td class="r"><span class="${asisteClass}">${a.asiste}</span></td>
+      <td class="r">${a.completadas}</td>
+      <td class="r">${a.meta}</td>
+      <td class="r">${a.faltan}</td>
+      <td class="r">${a.pct}</td>
+      <td class="r">${a.metaCorte}</td>
+      <td class="r" style="${faltanColor}">${a.faltanCorte}</td>
+      <td class="r"><span class="${pctClass}">${a.pctCorte}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 setInterval(() => { if (accessToken) loadData(); }, 5 * 60 * 1000);
