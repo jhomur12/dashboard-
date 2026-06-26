@@ -425,8 +425,22 @@ function filterAsistente(val, btn) {
   renderAgents();
 }
 
+function toPercent(val) {
+  const s = String(val).trim();
+  if (s.includes('%')) return s;
+  const n = parseFloat(s);
+  if (!isNaN(n)) {
+    const pct = (n > 0 && n <= 1) ? Math.round(n * 100) : Math.round(n);
+    return pct + '%';
+  }
+  return s;
+}
+
 function pctColor(val) {
-  const n = parseInt(String(val).replace('%',''))||0;
+  const s = String(val).trim();
+  let n;
+  if (s.includes('%')) n = parseInt(s);
+  else { const f = parseFloat(s); n = (f > 0 && f <= 1) ? Math.round(f * 100) : Math.round(f); }
   return n>=100?'pct-green':n>=80?'pct-orange':'pct-red';
 }
 
@@ -453,10 +467,10 @@ function renderAgents() {
       <td style="font-weight:500;color:var(--dark);">${a.agente}</td>
       <td class="r"><span class="${asisteCls}">${a.asiste}</span></td>
       <td class="r">${a.completadas}</td><td class="r">${a.meta}</td>
-      <td class="r">${a.faltan}</td><td class="r">${a.pct}</td>
+      <td class="r">${a.faltan}</td><td class="r">${toPercent(a.pct)}</td>
       <td class="r">${a.metaCorte}</td>
       <td class="r" style="${faltanSt}">${a.faltanCorte}</td>
-      <td class="r"><span class="${pctCls}">${a.pctCorte}</span></td>
+      <td class="r"><span class="${pctCls}">${toPercent(a.pctCorte)}</span></td>
     </tr>`;
   }).join('');
 }
