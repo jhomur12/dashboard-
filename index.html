@@ -1,260 +1,885 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Gestión — CORTE</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f8; color: #1a1a1a; min-height: 100vh; }
-  :root {
-    --orange:#F47920; --orange2:#F7941D; --green:#7DC242; --green2:#2EAD6B;
-    --dark:#1e2532; --mid:#374151; --border:#e5e7eb;
-  }
-  .topbar { background:var(--dark); color:#fff; padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:56px; border-bottom:3px solid var(--orange); }
-  .topbar-brand { display:flex; align-items:center; gap:14px; }
-  .topbar-logo { height:36px; }
-  .topbar-title { font-size:14px; font-weight:600; color:rgba(255,255,255,0.85); border-left:1px solid rgba(255,255,255,0.2); padding-left:14px; }
-  .topbar-right { display:flex; align-items:center; gap:10px; }
-  .btn { padding:6px 14px; border-radius:6px; font-size:12px; font-weight:500; cursor:pointer; border:none; transition:all 0.15s; }
-  .btn-light { background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); }
-  .btn-light:hover { background:rgba(255,255,255,0.2); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Habi — Productividad en Tiempo Real</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #7C3AED;
+      --primary-light: #8B5CF6;
+      --primary-lighter: #A78BFA;
+      --accent: #f39c12;
+      --success: #27ae60;
+      --warning: #e67e22;
+      --danger: #e74c3c;
+      --dark: #1a1a1a;
+      --dark-bg: #0f1419;
+      --card-bg: #ffffff;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --text-tertiary: #9ca3af;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  #status { padding:7px 24px; font-size:12px; display:flex; align-items:center; gap:8px; min-height:32px; background:#fff; border-bottom:1px solid var(--border); }
-  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-  .dot-ok { background:#10b981; } .dot-err { background:#ef4444; }
-  .dot-wait { background:var(--orange2); animation:blink 1s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  .page-nav { background:#fff; border-bottom:2px solid var(--border); display:flex; padding:0 24px; }
-  .page-tab { padding:12px 20px; font-size:13px; font-weight:600; color:#9ca3af; cursor:pointer; border:none; background:transparent; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all 0.15s; gap:6px; display:flex; align-items:center; }
-  .page-tab:hover { color:var(--orange); }
-  .page-tab.active { color:var(--orange); border-bottom-color:var(--orange); }
-  .page-section { display:none; }
-  .page-section.active { display:block; }
+    /* TOPBAR */
+    .topbar {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar-logo {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+    }
+    .topbar-title {
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar-title h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+    .topbar-title p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin: 0;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .clock {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      font-weight: 500;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #27ae60;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .btn-light {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .btn-light:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-1px);
+    }
 
-  .skill-bar { background:#fff; border-bottom:1px solid var(--border); padding:10px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-  .skill-bar label { font-size:12px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; }
-  .skill-tabs { display:flex; gap:6px; }
-  .skill-tab { padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1.5px solid var(--border); background:#fff; color:var(--mid); transition:all 0.15s; }
-  .skill-tab.active { background:var(--orange); border-color:var(--orange); color:#fff; }
-  .skill-tab:hover:not(.active) { border-color:var(--orange); color:var(--orange); }
-  .skill-divider { width:1px; height:20px; background:var(--border); }
+    /* PAGE NAV */
+    .page-nav {
+      background: var(--card-bg);
+      border-bottom: 2px solid var(--border-light);
+      display: flex;
+      padding: 0 24px;
+      gap: 8px;
+    }
+    .page-tab {
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      border-bottom: 3px solid transparent;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .page-tab:hover {
+      color: var(--primary);
+    }
+    .page-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
 
-  .main { padding:18px 24px; }
-  .chips { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
-  .chip { background:#fff; border:1px solid var(--border); border-radius:8px; padding:7px 14px; font-size:13px; display:flex; align-items:center; gap:8px; }
-  .chip-lbl { font-size:11px; color:#9ca3af; text-transform:uppercase; letter-spacing:0.05em; }
-  .chip-val { font-weight:600; color:var(--dark); }
+    /* SKILL BAR */
+    .filter-bar {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .filter-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+    }
+    .filter-tab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .filter-tab:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .filter-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .sync-info {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
 
-  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
-  .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px; }
+    /* STATUS */
+    #status {
+      padding: 12px 24px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #27ae60;
+    }
 
-  .card { background:#fff; border-radius:10px; border:1px solid var(--border); overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
-  .ch { padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
-  .ch h3 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; }
-  .ch-orange { background:var(--orange); } .ch-orange h3 { color:#fff; }
-  .ch-green  { background:var(--green2); } .ch-green h3  { color:#fff; }
-  .ch-dark   { background:var(--dark);  } .ch-dark h3   { color:#fff; }
-  .ch-badge  { font-size:10px; background:rgba(255,255,255,0.25); color:#fff; border-radius:10px; padding:2px 8px; font-weight:600; }
+    /* PAGE SECTIONS */
+    .page-section {
+      display: none;
+    }
+    .page-section.active {
+      display: block;
+    }
 
-  table { width:100%; border-collapse:collapse; }
-  th { font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.05em; padding:7px 14px; border-bottom:1px solid var(--border); text-align:left; }
-  td { padding:8px 14px; font-size:13px; color:var(--mid); border-bottom:1px solid #f9fafb; }
-  tr:last-child td { border-bottom:none; }
-  .r { text-align:right; }
-  .row-key td { color:var(--dark); font-weight:500; }
-  .row-total td { font-weight:700; color:var(--orange); background:#fff7f0; }
-  .zero { color:#d1d5db !important; }
+    /* MAIN CONTENT */
+    .main {
+      padding: 28px 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
 
-  .pw { display:flex; align-items:center; gap:7px; justify-content:flex-end; }
-  .pb { height:5px; width:52px; background:#f0fdf4; border-radius:3px; overflow:hidden; border:1px solid #bbf7d0; }
-  .pf { height:100%; border-radius:3px; background:var(--green2); transition:width 0.5s; }
-  .pf-orange { background:var(--orange2); }
-  .pv { font-weight:600; font-size:13px; min-width:36px; text-align:right; }
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+    }
+    .kpi-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .kpi-value.success { color: var(--success); }
+    .kpi-value.warning { color: var(--warning); }
+    .kpi-value.danger { color: var(--danger); }
+    .kpi-meta {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .kpi-meta-label {
+      color: var(--text-tertiary);
+    }
 
-  .section-title { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; padding-left:2px; }
+    /* PROGRESS BAR */
+    .progress-container {
+      margin-top: 12px;
+    }
+    .progress-bar {
+      height: 6px;
+      background: var(--border-light);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 3px;
+      animation: slideIn 0.6s ease-out;
+      box-shadow: 0 0 8px rgba(45, 95, 95, 0.3);
+    }
+    @keyframes slideIn {
+      from { width: 0; }
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
 
-  .agent-table-wrap { overflow-x:auto; }
-  .agent-table { width:100%; border-collapse:collapse; min-width:700px; }
-  .agent-table th { font-size:10px; font-weight:700; color:#9ca3af; text-transform:uppercase; padding:8px 12px; border-bottom:2px solid var(--border); text-align:left; white-space:nowrap; }
-  .agent-table th.r { text-align:right; }
-  .agent-table td { padding:8px 12px; font-size:13px; color:var(--mid); border-bottom:1px solid #f9fafb; white-space:nowrap; }
-  .agent-table tr:last-child td { border-bottom:none; }
-  .agent-table tr:hover td { background:#fafafa; }
-  .agent-table td.r { text-align:right; }
+    /* SECTION TITLE */
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      padding-left: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 16px;
+    }
 
-  .badge-skill { display:inline-block; font-size:10px; font-weight:700; border-radius:10px; padding:2px 8px; text-transform:uppercase; }
-  .badge-front    { background:#fff0e5; color:var(--orange); border:1px solid #fdd0aa; }
-  .badge-scraping { background:#f0fdf4; color:var(--green2); border:1px solid #bbf7d0; }
-  .badge-si { background:#f0fdf4; color:var(--green2); font-size:11px; font-weight:700; border-radius:6px; padding:2px 8px; border:1px solid #bbf7d0; }
-  .badge-no { background:#fef2f2; color:#ef4444; font-size:11px; font-weight:700; border-radius:6px; padding:2px 8px; border:1px solid #fecaca; }
-  .pct-green  { color:var(--green2); font-weight:700; }
-  .pct-red    { color:#ef4444; font-weight:700; }
-  .pct-orange { color:var(--orange); font-weight:700; }
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      overflow: hidden;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .card-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+    }
+    .card-badge {
+      font-size: 11px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
 
-  .agent-filters { display:flex; gap:8px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
-  .agent-filters label { font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; }
-  .agent-search { border:1px solid var(--border); border-radius:6px; padding:5px 10px; font-size:12px; outline:none; width:180px; }
-  .agent-search:focus { border-color:var(--orange); }
-  .agent-count { margin-left:auto; font-size:11px; color:#9ca3af; }
+    /* TABLES */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+      text-align: left;
+      background: var(--border-light);
+    }
+    th.r { text-align: right; }
+    td {
+      padding: 12px 16px;
+      font-size: 15px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--border-light); }
+    td.r { text-align: right; }
+    td.key {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    td.total {
+      font-weight: 700;
+      color: var(--primary);
+      background: linear-gradient(90deg, rgba(45,95,95,0.05) 0%, transparent 100%);
+    }
 
-  @media (max-width:700px) {
-    .g2,.g3 { grid-template-columns:1fr; }
-    .main { padding:12px; }
-    .topbar { padding:0 14px; }
-  }
-</style>
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 4px 8px;
+      text-transform: uppercase;
+    }
+    .badge-front {
+      background: #fff4e6;
+      color: #f39c12;
+      border: 1px solid #ffe5cc;
+    }
+    .badge-scraping {
+      background: #e8f5e9;
+      color: #27ae60;
+      border: 1px solid #c8e6c9;
+    }
+    .badge-si {
+      background: #e8f5e9;
+      color: #27ae60;
+    }
+    .badge-no {
+      background: #ffebee;
+      color: #e74c3c;
+    }
+
+    /* SEMAFORO */
+    .traffic-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-green { background: var(--success); box-shadow: 0 0 8px rgba(39,174,96,0.3); }
+    .dot-yellow { background: var(--warning); box-shadow: 0 0 8px rgba(230,126,34,0.3); }
+    .dot-red { background: var(--danger); box-shadow: 0 0 8px rgba(231,76,60,0.3); }
+
+    /* CHART CONTAINER */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .chart-container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .chart-container h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .chart-wrapper {
+      position: relative;
+      height: 280px;
+    }
+
+    /* AGENT FILTERS */
+    .agent-filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .agent-search {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      outline: none;
+      width: 240px;
+      transition: var(--transition);
+    }
+    .agent-search:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45,95,95,0.1);
+    }
+    .agent-count {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    /* AGENT TABLE */
+    .agent-table-wrap {
+      overflow-x: auto;
+    }
+    .agent-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    .agent-table td {
+      padding: 14px 16px;
+    }
+    .agent-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .pct-text {
+      font-weight: 700;
+    }
+    .pct-green { color: var(--success); }
+    .pct-yellow { color: var(--warning); }
+    .pct-red { color: var(--danger); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .topbar {
+        padding: 0 16px;
+        height: 60px;
+      }
+      .topbar-title h1 {
+        font-size: 14px;
+      }
+      .main {
+        padding: 16px;
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      .page-nav {
+        padding: 0 16px;
+      }
+      .filter-bar {
+        padding: 12px 16px;
+        gap: 12px;
+      }
+      .agent-search {
+        width: 100%;
+      }
+      .kpi-value {
+        font-size: 28px;
+      }
+      .chart-wrapper {
+        height: 220px;
+      }
+    }
+
+    /* LOADING */
+    .loading {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* ZERO STATE */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-tertiary);
+    }
+    .empty-state p {
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-brand">
-    <svg class="topbar-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 44 Q52 8 100 14 Q145 20 162 44" fill="none" stroke="#F47920" stroke-width="6" stroke-linecap="round"/>
-      <text x="10" y="53" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#2EAD6B">asertis</text>
-      <text x="10" y="60" font-family="Arial,sans-serif" font-size="6" fill="#7DC242">Una marca Fenalco Valle</text>
-      <rect x="138" y="41" width="26" height="14" rx="3" fill="#fff"/>
-      <text x="151" y="52" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#1e2532" text-anchor="middle">BPS</text>
-    </svg>
-    <span class="topbar-title">Dashboard CORTE</span>
+    <div class="topbar-logo">🏠</div>
+    <div class="topbar-title">
+      <h1>Habi Dashboard</h1>
+      <p>Productividad en Tiempo Real</p>
+    </div>
   </div>
   <div class="topbar-right">
-    <span id="clock" style="font-size:12px;opacity:0.7;"></span>
+    <div class="status-dot"></div>
+    <span class="clock" id="clock">—:—:—</span>
     <button class="btn btn-light" onclick="loadAll()">↻ Actualizar</button>
   </div>
 </div>
 
 <div id="status">
-  <div class="dot dot-wait" id="dot"></div>
+  <span class="status-indicator"></span>
   <span id="status-msg">Cargando datos…</span>
 </div>
 
 <div class="page-nav">
-  <button class="page-tab active" onclick="switchPage('corte',this)">📊 CORTE</button>
-  <button class="page-tab" onclick="switchPage('agentes',this)">👥 Agentes</button>
+  <button class="page-tab active" onclick="switchPage('corte', this)">📊 Operación</button>
+  <button class="page-tab" onclick="switchPage('agentes', this)">👥 Mis Agentes</button>
 </div>
 
-<!-- PAGE CORTE -->
+<!-- PAGE: CORTE -->
 <div id="page-corte" class="page-section active">
-  <div class="skill-bar">
-    <label>Vista:</label>
-    <div class="skill-tabs" id="skill-tabs">
-      <button class="skill-tab active" onclick="switchSkill('all',this)">Todos</button>
-      <button class="skill-tab" onclick="switchSkill('front',this)">Front</button>
-      <button class="skill-tab" onclick="switchSkill('scraping',this)">Scraping</button>
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">Vista:</span>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="switchSkill('all', this)">Todos</button>
+        <button class="filter-tab" onclick="switchSkill('front', this)">Front</button>
+        <button class="filter-tab" onclick="switchSkill('scraping', this)">Scraping</button>
+      </div>
     </div>
-    <div class="skill-divider"></div>
-    <label>Tipo:</label>
-    <div class="skill-tabs" id="asist-tabs">
-      <button class="skill-tab active" onclick="switchAsist('all',this)">General + Corte</button>
-      <button class="skill-tab" onclick="switchAsist('general',this)">Solo General</button>
-      <button class="skill-tab" onclick="switchAsist('corte',this)">Solo Corte</button>
+    <div style="width: 1px; height: 24px; background: var(--border);"></div>
+    <div class="filter-group">
+      <span class="filter-label">Mostrar:</span>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="switchAsist('all', this)">General + Corte</button>
+        <button class="filter-tab" onclick="switchAsist('general', this)">Solo General</button>
+        <button class="filter-tab" onclick="switchAsist('corte', this)">Solo Corte</button>
+      </div>
     </div>
-    <span style="font-size:11px;color:#9ca3af;margin-left:auto;">Última sync: <b id="d-sync">—</b></span>
+    <div class="sync-info">
+      Última actualización: <strong id="d-sync">—</strong>
+    </div>
   </div>
+
   <div class="main">
-    <div class="chips">
-      <div class="chip"><span class="chip-lbl">Fecha</span><span class="chip-val" id="d-fecha">—</span></div>
-      <div class="chip"><span class="chip-lbl">Hora sheet</span><span class="chip-val" id="d-hora">—</span></div>
+    <!-- HEADER INFO -->
+    <div style="margin-bottom: 32px;">
+      <p class="section-title">
+        <span>📅 Estado del Día</span>
+        <div class="section-divider"></div>
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+        <div style="background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <p style="font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; font-weight: 600; margin-bottom: 4px;">Fecha</p>
+          <p style="font-size: 16px; font-weight: 700; color: var(--text-primary);" id="d-fecha">—</p>
+        </div>
+        <div style="background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <p style="font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; font-weight: 600; margin-bottom: 4px;">Hora</p>
+          <p style="font-size: 16px; font-weight: 700; color: var(--text-primary);" id="d-hora">—</p>
+        </div>
+      </div>
     </div>
 
+    <!-- RESUMEN GENERAL -->
     <div id="section-general">
-      <p class="section-title">Resumen General</p>
-      <div class="g2" id="g2-resumen" style="margin-bottom:14px;">
-        <div class="card" id="card-resumen">
-          <div class="ch ch-orange"><h3>Resumen General</h3><span class="ch-badge">FRONT + SCRAPING</span></div>
-          <table>
-            <thead><tr><th></th><th class="r" data-show="front all">Front</th><th class="r" data-show="scraping all">Scraping</th><th class="r">Total</th></tr></thead>
-            <tbody>
-              <tr class="row-key"><td>Completadas</td><td class="r" id="c-cf" data-show="front all">—</td><td class="r" id="c-cs" data-show="scraping all">—</td><td class="r" id="c-ct">—</td></tr>
-              <tr><td>Meta</td><td class="r" id="c-mf" data-show="front all">—</td><td class="r" id="c-ms" data-show="scraping all">—</td><td class="r" id="c-mt">—</td></tr>
-              <tr><td>Faltan</td><td class="r" id="c-ff" data-show="front all">—</td><td class="r" id="c-fs" data-show="scraping all">—</td><td class="r" id="c-ft">—</td></tr>
-              <tr><td>% Cumplimiento</td><td class="r" id="c-pf" data-show="front all">—</td><td class="r" id="c-ps" data-show="scraping all">—</td>
-                <td class="r"><div class="pw"><div class="pb"><div class="pf pf-orange" id="pb-pt"></div></div><span class="pv" id="c-pt">—</span></div></td></tr>
-            </tbody>
-          </table>
+      <p class="section-title">
+        <span>📈 Cumplimiento General</span>
+        <div class="section-divider"></div>
+      </p>
+      <div class="kpi-grid" id="kpi-general">
+        <div class="kpi-card">
+          <p class="kpi-label">Completadas</p>
+          <p class="kpi-value" id="c-ct">—</p>
+          <p class="kpi-meta"><span class="kpi-meta-label">de</span> <strong id="c-mt">—</strong></p>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="pb-pt" style="width: 0%;"></div>
+            </div>
+          </div>
         </div>
-        <div class="card" id="card-corte">
-          <div class="ch ch-green"><h3>Corte del día</h3><span class="ch-badge">META AL CORTE</span></div>
+        <div class="kpi-card">
+          <p class="kpi-label">Cumplimiento</p>
+          <p class="kpi-value success" id="c-pt">—</p>
+          <p class="kpi-meta">de la meta diaria</p>
+          <div style="margin-top: 8px; display: flex; gap: 4px;" id="semaforo-general">
+            <div class="dot dot-green"></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Faltan</p>
+          <p class="kpi-value warning" id="c-ft">—</p>
+          <p class="kpi-meta">para alcanzar meta</p>
+        </div>
+      </div>
+
+      <!-- FRONT vs SCRAPING -->
+      <div style="margin-top: 24px;">
+        <p class="section-title">
+          <span>🎯 Desglose por Skill</span>
+          <div class="section-divider"></div>
+        </p>
+        <div class="card">
+          <div class="card-header">
+            <h3>Productividad por Canal</h3>
+          </div>
           <table>
-            <thead><tr><th></th><th class="r" data-show="front all">Front</th><th class="r" data-show="scraping all">Scraping</th><th class="r">Total</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Métrica</th>
+                <th class="r" data-show="front all">Front</th>
+                <th class="r" data-show="scraping all">Scraping</th>
+                <th class="r">Total</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr class="row-key"><td>Meta corte</td><td class="r" id="c-mcf" data-show="front all">—</td><td class="r" id="c-mcs" data-show="scraping all">—</td><td class="r" id="c-mct">—</td></tr>
-              <tr><td>Faltan</td><td class="r" id="c-fcf" data-show="front all">—</td><td class="r" id="c-fcs" data-show="scraping all">—</td><td class="r" id="c-fct">—</td></tr>
-              <tr><td>% Corte</td><td class="r" id="c-pcf" data-show="front all">—</td><td class="r" id="c-pcs" data-show="scraping all">—</td>
-                <td class="r"><div class="pw"><div class="pb"><div class="pf" id="pb-pct"></div></div><span class="pv" id="c-pct">—</span></div></td></tr>
+              <tr>
+                <td class="key">Completadas</td>
+                <td class="r" id="c-cf" data-show="front all">—</td>
+                <td class="r" id="c-cs" data-show="scraping all">—</td>
+                <td class="r key" id="c-ct-dup">—</td>
+              </tr>
+              <tr>
+                <td class="key">Meta</td>
+                <td class="r" id="c-mf" data-show="front all">—</td>
+                <td class="r" id="c-ms" data-show="scraping all">—</td>
+                <td class="r key">—</td>
+              </tr>
+              <tr>
+                <td class="key">Faltan</td>
+                <td class="r" id="c-ff" data-show="front all">—</td>
+                <td class="r" id="c-fs" data-show="scraping all">—</td>
+                <td class="r key" id="c-ft-dup">—</td>
+              </tr>
+              <tr style="background: var(--border-light);">
+                <td class="key">% Cumplimiento</td>
+                <td class="r" id="c-pf" data-show="front all">—</td>
+                <td class="r" id="c-ps" data-show="scraping all">—</td>
+                <td class="r key" id="c-pt-dup">—</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <p class="section-title">Área Metropolitana</p>
-    <div class="g3" id="g3-area">
-      <div class="card" id="card-front-area">
-        <div class="ch ch-orange"><h3>Front</h3></div>
-        <table>
-          <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
-          <tbody>
-            <tr><td>Bogotá</td><td class="r" id="fb">—</td></tr>
-            <tr><td>Valle de Aburrá</td><td class="r" id="fv">—</td></tr>
-            <tr><td>Barranquilla</td><td class="r" id="fba">—</td></tr>
-            <tr><td>Cali</td><td class="r" id="fc">—</td></tr>
-            <tr class="row-total"><td>Total</td><td class="r" id="ft">—</td></tr>
-          </tbody>
-        </table>
+    <!-- CORTE DEL DÍA -->
+    <div id="section-corte" style="margin-top: 32px;">
+      <p class="section-title">
+        <span>⏰ Corte Operacional</span>
+        <div class="section-divider"></div>
+      </p>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <p class="kpi-label">Meta Corte</p>
+          <p class="kpi-value" id="c-mct">—</p>
+          <p class="kpi-meta">registros por completar</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">% Corte Operacional</p>
+          <p class="kpi-value success" id="c-pct">—</p>
+          <p class="kpi-meta">de cumplimiento</p>
+          <div style="margin-top: 8px; display: flex; gap: 4px;" id="semaforo-corte">
+            <div class="dot dot-green"></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Faltan para Corte</p>
+          <p class="kpi-value warning" id="c-fct">—</p>
+          <p class="kpi-meta">documentos</p>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="pb-pct" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card" id="card-scraping-area">
-        <div class="ch ch-green"><h3>Scraping</h3></div>
-        <table>
-          <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
-          <tbody>
-            <tr><td>Bogotá</td><td class="r" id="sb">—</td></tr>
-            <tr><td>Valle de Aburrá</td><td class="r" id="sv">—</td></tr>
-            <tr><td>Barranquilla</td><td class="r" id="sba">—</td></tr>
-            <tr><td>Cali</td><td class="r" id="sc">—</td></tr>
-            <tr class="row-total"><td>Total</td><td class="r" id="st">—</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="card" id="card-total-area">
-        <div class="ch ch-dark"><h3>Total — Área Metropolitana</h3></div>
-        <table>
-          <thead><tr><th>Ciudad</th><th class="r">Cantidad</th></tr></thead>
-          <tbody>
-            <tr><td>Bogotá</td><td class="r" id="tb">—</td></tr>
-            <tr><td>Valle de Aburrá</td><td class="r" id="tv">—</td></tr>
-            <tr><td>Barranquilla</td><td class="r" id="tba">—</td></tr>
-            <tr><td>Cali</td><td class="r" id="tc">—</td></tr>
-            <tr class="row-total"><td>Total</td><td class="r" id="tt">—</td></tr>
-          </tbody>
-        </table>
+
+      <div style="margin-top: 20px;">
+        <div class="card">
+          <div class="card-header">
+            <h3>Corte Detallado</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Métrica</th>
+                <th class="r" data-show="front all">Front</th>
+                <th class="r" data-show="scraping all">Scraping</th>
+                <th class="r">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="key">Meta Corte</td>
+                <td class="r" id="c-mcf" data-show="front all">—</td>
+                <td class="r" id="c-mcs" data-show="scraping all">—</td>
+                <td class="r key">—</td>
+              </tr>
+              <tr>
+                <td class="key">Faltan</td>
+                <td class="r" id="c-fcf" data-show="front all">—</td>
+                <td class="r" id="c-fcs" data-show="scraping all">—</td>
+                <td class="r key">—</td>
+              </tr>
+              <tr style="background: var(--border-light);">
+                <td class="key">% Corte</td>
+                <td class="r" id="c-pcf" data-show="front all">—</td>
+                <td class="r" id="c-pcs" data-show="scraping all">—</td>
+                <td class="r key">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+
+    <!-- GRÁFICOS -->
+    <div style="margin-top: 32px;">
+      <p class="section-title">
+        <span>📊 Análisis Detallado</span>
+        <div class="section-divider"></div>
+      </p>
+      <div class="charts-grid">
+        <div class="chart-container">
+          <h4>Cumplimiento General vs Meta</h4>
+          <div class="chart-wrapper">
+            <canvas id="chartCumplimiento"></canvas>
+          </div>
+        </div>
+        <div class="chart-container">
+          <h4>Front vs Scraping</h4>
+          <div class="chart-wrapper">
+            <canvas id="chartSkills"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </div>
 
-<!-- PAGE AGENTES -->
+<!-- PAGE: AGENTES -->
 <div id="page-agentes" class="page-section">
   <div class="main">
+    <p class="section-title">
+      <span>👥 Equipo de Agentes</span>
+      <div class="section-divider"></div>
+    </p>
     <div class="card">
-      <div class="ch ch-dark">
-        <h3>Gestión por Agente — X AGENTE</h3>
-        <span class="ch-badge" id="agent-date-badge">—</span>
+      <div class="card-header">
+        <h3>Productividad Individual</h3>
+        <span class="card-badge" id="agent-date-badge">—</span>
       </div>
       <div class="agent-filters">
-        <label>Filtrar:</label>
-        <input class="agent-search" id="agent-search" type="text" placeholder="Buscar agente…" oninput="renderAgents()">
-        <div class="skill-tabs">
-          <button class="skill-tab active" onclick="filterSkillAgent('all',this)">Todos</button>
-          <button class="skill-tab" onclick="filterSkillAgent('FRONT',this)">Front</button>
-          <button class="skill-tab" onclick="filterSkillAgent('SCRAPING',this)">Scraping</button>
+        <input class="agent-search" id="agent-search" type="text" placeholder="Buscar por nombre o skill…" oninput="renderAgents()">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterSkillAgent('all', this)">Todos</button>
+          <button class="filter-tab" onclick="filterSkillAgent('FRONT', this)">Front</button>
+          <button class="filter-tab" onclick="filterSkillAgent('SCRAPING', this)">Scraping</button>
         </div>
-        <div class="skill-tabs">
-          <button class="skill-tab active" onclick="filterAsistente('all',this)">Todos</button>
-          <button class="skill-tab" onclick="filterAsistente('SI',this)">✓ Asisten</button>
-          <button class="skill-tab" onclick="filterAsistente('NO',this)">✗ No asisten</button>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterAsistente('all', this)">Todos</button>
+          <button class="filter-tab" onclick="filterAsistente('SI', this)">✓ Asisten</button>
+          <button class="filter-tab" onclick="filterAsistente('NO', this)">✗ Ausentes</button>
         </div>
         <span class="agent-count" id="agent-count"></span>
       </div>
@@ -262,14 +887,21 @@
         <table class="agent-table">
           <thead>
             <tr>
-              <th>Skill</th><th>Agente</th><th class="r">Asiste</th>
-              <th class="r">Completadas</th><th class="r">Meta</th><th class="r">Faltan</th>
-              <th class="r">% Cumpl.</th><th class="r">Meta Corte</th>
-              <th class="r">Faltan Corte</th><th class="r">% Corte</th>
+              <th>Skill</th>
+              <th>Agente</th>
+              <th class="r">Asiste</th>
+              <th class="r">Completadas</th>
+              <th class="r">Meta</th>
+              <th class="r">Faltan</th>
+              <th class="r">% Cumpl.</th>
             </tr>
           </thead>
           <tbody id="agent-tbody">
-            <tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Cargando agentes…</td></tr>
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-tertiary); padding: 32px;">
+                Cargando agentes…
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -285,55 +917,90 @@ let currentAsist = 'all';
 let agentData = [];
 let agentSkillFilter = 'all';
 let agentAsistFilter = 'all';
+let chartCumplimiento = null;
+let chartSkills = null;
 
+// CLOCK
 setInterval(() => {
-  document.getElementById('clock').textContent =
-    new Date().toLocaleString('es-CO', { dateStyle:'short', timeStyle:'medium' });
+  document.getElementById('clock').textContent = new Date().toLocaleString('es-CO', {
+    dateStyle: 'short',
+    timeStyle: 'medium'
+  });
 }, 1000);
 
+// PAGE SWITCHING
 function switchPage(page, btn) {
   document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('page-' + page).classList.add('active');
+  if (page === 'agentes') {
+    setTimeout(() => renderAgents(), 100);
+  }
 }
 
 function switchSkill(skill, btn) {
   currentSkill = skill;
-  document.querySelectorAll('#skill-tabs .skill-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-tabs')[0].querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   applyFilters();
 }
+
 function switchAsist(asist, btn) {
   currentAsist = asist;
-  document.querySelectorAll('#asist-tabs .skill-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-tabs')[1].querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   applyFilters();
 }
 
 function applyFilters() {
   document.querySelectorAll('[data-show]').forEach(el => {
-    el.style.display = el.getAttribute('data-show').split(' ').includes(currentSkill) ? '' : 'none';
+    const shows = el.getAttribute('data-show').split(' ');
+    el.style.display = shows.includes(currentSkill) ? '' : 'none';
   });
-  const fc=document.getElementById('card-front-area');
-  const sc=document.getElementById('card-scraping-area');
-  const tc=document.getElementById('card-total-area');
-  const g3=document.getElementById('g3-area');
-  if (currentSkill==='all')     { fc.style.display=''; sc.style.display=''; tc.style.display=''; g3.style.gridTemplateColumns='repeat(3,1fr)'; }
-  else if (currentSkill==='front') { fc.style.display=''; sc.style.display='none'; tc.style.display='none'; g3.style.gridTemplateColumns='1fr'; }
-  else                           { fc.style.display='none'; sc.style.display=''; tc.style.display='none'; g3.style.gridTemplateColumns='1fr'; }
 
-  const cr=document.getElementById('card-resumen');
-  const cc=document.getElementById('card-corte');
-  const g2=document.getElementById('g2-resumen');
-  if (currentAsist==='all')      { cr.style.display=''; cc.style.display=''; g2.style.gridTemplateColumns='1fr 1fr'; }
-  else if (currentAsist==='general'){ cr.style.display=''; cc.style.display='none'; g2.style.gridTemplateColumns='1fr'; }
-  else                           { cr.style.display='none'; cc.style.display=''; g2.style.gridTemplateColumns='1fr'; }
+
+
+  const cr = document.getElementById('section-general');
+  const cc = document.getElementById('section-corte');
+
+  if (currentAsist === 'all') {
+    cr.style.display = '';
+    cc.style.display = '';
+  } else if (currentAsist === 'general') {
+    cr.style.display = '';
+    cc.style.display = 'none';
+  } else {
+    cr.style.display = 'none';
+    cc.style.display = '';
+  }
 }
 
 function setStatus(type, msg) {
-  document.getElementById('dot').className = 'dot ' + (type==='ok'?'dot-ok':type==='err'?'dot-err':'dot-wait');
+  const dot = document.querySelector('.status-indicator');
+  if (type === 'ok') {
+    dot.style.background = '#27ae60';
+  } else if (type === 'err') {
+    dot.style.background = '#e74c3c';
+  } else {
+    dot.style.background = '#f39c12';
+  }
   document.getElementById('status-msg').textContent = msg;
+}
+
+// TRAFFIC LIGHT LOGIC
+function getTrafficColor(pct) {
+  const val = parseFloat(String(pct).replace('%', '')) || 0;
+  if (val >= 100) return 'green';
+  if (val >= 80) return 'yellow';
+  return 'red';
+}
+
+function updateSemaforo(elementId, pctVal) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const color = getTrafficColor(pctVal);
+  el.innerHTML = `<div class="dot dot-${color}"></div>`;
 }
 
 async function fetchSheet(sheet) {
@@ -343,23 +1010,19 @@ async function fetchSheet(sheet) {
 }
 
 function formatDate(v) {
-  // Apps Script serializes Sheets dates as ISO strings
   if (typeof v !== 'string' || !v.match(/^\d{4}-\d{2}-\d{2}T/)) return String(v);
   const d = new Date(v);
   if (isNaN(d)) return String(v);
-  // If UTC time is 00:00:00 → it's a pure date cell
   const h = d.getUTCHours(), m = d.getUTCMinutes(), s = d.getUTCSeconds();
   if (h === 0 && m === 0 && s === 0) {
-    // Pure date: show DD/MM/YYYY using UTC parts to avoid timezone shift
-    const dd = String(d.getUTCDate()).padStart(2,'0');
-    const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
     const yyyy = d.getUTCFullYear();
     return dd + '/' + mm + '/' + yyyy;
   }
-  // It's a time cell (1899-12-30 base): extract UTC time directly
-  const hh = String(d.getUTCHours()).padStart(2,'0');
-  const mi = String(d.getUTCMinutes()).padStart(2,'0');
-  const ss = String(d.getUTCSeconds()).padStart(2,'0');
+  const hh = String(d.getUTCHours()).padStart(2, '0');
+  const mi = String(d.getUTCMinutes()).padStart(2, '0');
+  const ss = String(d.getUTCSeconds()).padStart(2, '0');
   return hh + ':' + mi + ':' + ss;
 }
 
@@ -370,94 +1033,8 @@ function g(r, row, col) {
   return String(v);
 }
 
-const PCT_IDS = new Set(['c-pf','c-ps','c-pt','c-pcf','c-pcs','c-pct']);
-function set(id, val) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  let display = val;
-  if (PCT_IDS.has(id) && val !== '—') {
-    display = toPercent(val);
-  }
-  el.textContent = display;
-  el.classList.toggle('zero', val==='0'||val===0);
-}
-
-function pctNum(v) {
-  const s = String(v).trim();
-  if (s.includes('%')) return Math.min(parseInt(s)||0, 100);
-  const n = parseFloat(s);
-  if (!isNaN(n)) return Math.min(Math.round(n * 100), 100);
-  return 0;
-}
-function bar(id, val) { const el=document.getElementById(id); if(el) el.style.width=pctNum(val)+'%'; }
-function num(v) { return parseInt(String(v).replace(/[^0-9\-]/g,''))||0; }
-
-async function loadCorte() {
-  const r = await fetchSheet('CORTE');
-  set('d-fecha', g(r,0,1)); set('d-hora', g(r,0,4));
-  set('c-cf',g(r,3,1)); set('c-cs',g(r,3,2)); set('c-ct',g(r,3,3));
-  set('c-mf',g(r,4,1)); set('c-ms',g(r,4,2)); set('c-mt',g(r,4,3));
-  set('c-ff',g(r,5,1)); set('c-fs',g(r,5,2)); set('c-ft',g(r,5,3));
-  set('c-pf',g(r,6,1)); set('c-ps',g(r,6,2)); set('c-pt',g(r,6,3));
-  set('c-mcf',g(r,8,1)); set('c-mcs',g(r,8,2)); set('c-mct',g(r,8,3));
-  set('c-fcf',g(r,9,1)); set('c-fcs',g(r,9,2)); set('c-fct',g(r,9,3));
-  set('c-pcf',g(r,10,1)); set('c-pcs',g(r,10,2)); set('c-pct',g(r,10,3));
-  // Front área col I = index 8
-  set('fb',g(r,3,8)); set('fv',g(r,4,8)); set('fba',g(r,5,8)); set('fc',g(r,6,8)); set('ft',g(r,7,8));
-  // Scraping área rows 11-15
-  set('sb',g(r,11,8)); set('sv',g(r,12,8)); set('sba',g(r,13,8)); set('sc',g(r,14,8)); set('st',g(r,15,8));
-  // Total calculado
-  const tb=num(g(r,3,8))+num(g(r,11,8));
-  const tv=num(g(r,4,8))+num(g(r,12,8));
-  const tba=num(g(r,5,8))+num(g(r,13,8));
-  const tc=num(g(r,6,8))+num(g(r,14,8));
-  set('tb',tb); set('tv',tv); set('tba',tba); set('tc',tc); set('tt',tb+tv+tba+tc);
-  bar('pb-pt',g(r,6,3)); bar('pb-pct',g(r,10,3));
-  applyFilters();
-}
-
-async function loadAgentes() {
-  const r = await fetchSheet('X AGENTE');
-  const fecha = r[0] && r[0][2] ? String(r[0][2]) : '—';
-  document.getElementById('agent-date-badge').textContent = fecha;
-  agentData = [];
-  for (let i = 7; i < r.length; i++) {
-    const row = r[i];
-    if (!row || !row[1] || String(row[1]).trim()==='') continue;
-    agentData.push({
-      skill: String(row[0]||''), agente: String(row[1]||''),
-      asiste: String(row[2]||''), completadas: String(row[3]||''),
-      meta: String(row[4]||''), faltan: String(row[5]||''),
-      pct: String(row[6]||''), metaCorte: String(row[7]||''),
-      faltanCorte: String(row[8]||''), pctCorte: String(row[9]||''),
-    });
-  }
-  renderAgents();
-}
-
-async function loadAll() {
-  setStatus('wait', 'Actualizando…');
-  try {
-    await Promise.all([loadCorte(), loadAgentes()]);
-    const t = new Date().toLocaleTimeString('es-CO');
-    document.getElementById('d-sync').textContent = t;
-    setStatus('ok', 'Actualizado · ' + t);
-  } catch(e) {
-    setStatus('err', 'Error: ' + e.message);
-  }
-}
-
-function filterSkillAgent(skill, btn) {
-  agentSkillFilter = skill;
-  btn.closest('.skill-tabs').querySelectorAll('.skill-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderAgents();
-}
-function filterAsistente(val, btn) {
-  agentAsistFilter = val;
-  btn.closest('.skill-tabs').querySelectorAll('.skill-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderAgents();
+function num(v) {
+  return parseInt(String(v).replace(/[^0-9\-]/g, '')) || 0;
 }
 
 function toPercent(val) {
@@ -465,54 +1042,232 @@ function toPercent(val) {
   if (s.includes('%')) return s;
   const n = parseFloat(s);
   if (!isNaN(n)) {
-    // Values from Sheets always come as decimals (0.56 = 56%, 1.15 = 115%)
-    // They are ALWAYS in 0..N decimal form, never already multiplied
     return Math.round(n * 100) + '%';
   }
   return s;
 }
 
-function pctColor(val) {
-  const s = String(val).trim();
-  let n;
-  if (s.includes('%')) n = parseInt(s);
-  else { const f = parseFloat(s); n = (f > 0 && f <= 1) ? Math.round(f * 100) : Math.round(f); }
-  return n>=100?'pct-green':n>=80?'pct-orange':'pct-red';
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val === '—' ? val : (id.startsWith('c-p') || id.startsWith('c-m') || id.startsWith('c-f') || id.startsWith('c-c') ? val : val);
+  if ((id.startsWith('c-p') || id.startsWith('c-m') || id.startsWith('c-f') || id.startsWith('c-c')) && val !== '—') {
+    if (!id.includes('p')) {
+      el.textContent = val;
+    } else {
+      el.textContent = val.includes('%') ? val : (Math.round(parseFloat(val) * 100) + '%');
+    }
+  }
+}
+
+function bar(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const pct = parseFloat(String(val).replace('%', '')) || 0;
+  el.style.width = Math.min(pct, 100) + '%';
+}
+
+async function loadCorte() {
+  const r = await fetchSheet('CORTE');
+  
+  set('d-fecha', g(r, 0, 1));
+  set('d-hora', g(r, 0, 4));
+
+  // Completadas
+  set('c-cf', g(r, 3, 1));
+  set('c-cs', g(r, 3, 2));
+  set('c-ct', g(r, 3, 3));
+  set('c-ct-dup', g(r, 3, 3));
+
+  // Meta
+  set('c-mf', g(r, 4, 1));
+  set('c-ms', g(r, 4, 2));
+  set('c-mt', g(r, 4, 3));
+
+  // Faltan
+  set('c-ff', g(r, 5, 1));
+  set('c-fs', g(r, 5, 2));
+  set('c-ft', g(r, 5, 3));
+  set('c-ft-dup', g(r, 5, 3));
+
+  // Porcentajes
+  const pct = g(r, 6, 3);
+  set('c-pf', g(r, 6, 1));
+  set('c-ps', g(r, 6, 2));
+  set('c-pt', toPercent(pct));
+  set('c-pt-dup', toPercent(pct));
+  bar('pb-pt', pct);
+  updateSemaforo('semaforo-general', toPercent(pct));
+
+  // Corte
+  set('c-mcf', g(r, 8, 1));
+  set('c-mcs', g(r, 8, 2));
+  set('c-mct', g(r, 8, 3));
+
+  set('c-fcf', g(r, 9, 1));
+  set('c-fcs', g(r, 9, 2));
+  set('c-fct', g(r, 9, 3));
+
+  const pctCorte = g(r, 10, 3);
+  set('c-pcf', g(r, 10, 1));
+  set('c-pcs', g(r, 10, 2));
+  set('c-pct', toPercent(pctCorte));
+  bar('pb-pct', pctCorte);
+  updateSemaforo('semaforo-corte', toPercent(pctCorte));
+
+  // Actualizar gráficos
+  updateCharts(r);
+  applyFilters();
+}
+
+function updateCharts(r) {
+  const cf = num(g(r, 3, 1));
+  const cs = num(g(r, 3, 2));
+  const ct = num(g(r, 3, 3));
+  const mf = num(g(r, 4, 1));
+  const ms = num(g(r, 4, 2));
+  const mt = num(g(r, 4, 3));
+
+  const ctx1 = document.getElementById('chartCumplimiento');
+  const ctx2 = document.getElementById('chartSkills');
+
+  if (chartCumplimiento) chartCumplimiento.destroy();
+  if (chartSkills) chartSkills.destroy();
+
+  chartCumplimiento = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: ['Completadas', 'Meta'],
+      datasets: [{
+        label: 'Cantidad',
+        data: [ct, mt],
+        backgroundColor: ['#2d5f5f', '#e5e7eb'],
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { color: '#6b7280' }, grid: { color: '#f3f4f6' } }
+      }
+    }
+  });
+
+  chartSkills = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: ['Front', 'Scraping'],
+      datasets: [{
+        data: [cf, cs],
+        backgroundColor: ['#f39c12', '#27ae60'],
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, color: '#6b7280' } }
+      }
+    }
+  });
+}
+
+async function loadAgentes() {
+  const r = await fetchSheet('X AGENTE');
+  const fecha = r[0] && r[0][2] ? String(r[0][2]) : '—';
+  document.getElementById('agent-date-badge').textContent = fecha;
+
+  agentData = [];
+  for (let i = 7; i < r.length; i++) {
+    const row = r[i];
+    if (!row || !row[1] || String(row[1]).trim() === '') continue;
+    agentData.push({
+      skill: String(row[0] || ''),
+      agente: String(row[1] || ''),
+      asiste: String(row[2] || ''),
+      completadas: String(row[3] || ''),
+      meta: String(row[4] || ''),
+      faltan: String(row[5] || ''),
+      pct: String(row[6] || ''),
+      metaCorte: String(row[7] || ''),
+      faltanCorte: String(row[8] || ''),
+      pctCorte: String(row[9] || '')
+    });
+  }
+  renderAgents();
+}
+
+function filterSkillAgent(skill, btn) {
+  agentSkillFilter = skill;
+  btn.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAgents();
+}
+
+function filterAsistente(val, btn) {
+  agentAsistFilter = val;
+  btn.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAgents();
 }
 
 function renderAgents() {
-  const search = (document.getElementById('agent-search').value||'').toLowerCase();
-  const tbody  = document.getElementById('agent-tbody');
+  const search = (document.getElementById('agent-search').value || '').toLowerCase();
+  const tbody = document.getElementById('agent-tbody');
+
   const rows = agentData.filter(a => {
-    return (agentSkillFilter==='all' || a.skill.toUpperCase()===agentSkillFilter)
-        && (agentAsistFilter==='all' || a.asiste.toUpperCase()===agentAsistFilter)
-        && (!search || a.agente.toLowerCase().includes(search) || a.skill.toLowerCase().includes(search));
+    return (agentSkillFilter === 'all' || a.skill.toUpperCase() === agentSkillFilter)
+      && (agentAsistFilter === 'all' || a.asiste.toUpperCase() === agentAsistFilter)
+      && (!search || a.agente.toLowerCase().includes(search) || a.skill.toLowerCase().includes(search));
   });
-  document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length!==1?'s':''}`;
+
+  document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length !== 1 ? 's' : ''}`;
+
   if (!rows.length) {
-    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:24px;">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-tertiary); padding: 32px;">Sin resultados</td></tr>`;
     return;
   }
+
   tbody.innerHTML = rows.map(a => {
-    const skillCls  = a.skill.toUpperCase()==='FRONT'?'badge-front':'badge-scraping';
-    const asisteCls = a.asiste.toUpperCase()==='SI'?'badge-si':'badge-no';
-    const pctCls    = pctColor(a.pctCorte);
-    const faltanSt  = parseInt(a.faltanCorte)<0?'color:var(--green2);font-weight:700;':'';
+    const skillClass = a.skill.toUpperCase() === 'FRONT' ? 'badge-front' : 'badge-scraping';
+    const asisColor = a.asiste.toUpperCase() === 'SI' ? 'badge-si' : 'badge-no';
+    const pctVal = toPercent(a.pct);
+    const pctCls = getTrafficColor(pctVal);
+
     return `<tr>
-      <td><span class="badge-skill ${skillCls}">${a.skill}</span></td>
-      <td style="font-weight:500;color:var(--dark);">${a.agente}</td>
-      <td class="r"><span class="${asisteCls}">${a.asiste}</span></td>
-      <td class="r">${a.completadas}</td><td class="r">${a.meta}</td>
-      <td class="r">${a.faltan}</td><td class="r">${toPercent(a.pct)}</td>
-      <td class="r">${a.metaCorte}</td>
-      <td class="r" style="${faltanSt}">${a.faltanCorte}</td>
-      <td class="r"><span class="${pctCls}">${toPercent(a.pctCorte)}</span></td>
+      <td><span class="badge ${skillClass}">${a.skill}</span></td>
+      <td class="agent-name">${a.agente}</td>
+      <td class="r"><span class="badge ${asisColor}">${a.asiste}</span></td>
+      <td class="r">${a.completadas}</td>
+      <td class="r">${a.meta}</td>
+      <td class="r">${a.faltan}</td>
+      <td class="r pct-text pct-${pctCls}">${pctVal}</td>
     </tr>`;
   }).join('');
 }
 
-setInterval(loadAll, 5*60*1000);
+async function loadAll() {
+  setStatus('wait', 'Actualizando datos…');
+  try {
+    await Promise.all([loadCorte(), loadAgentes()]);
+    const t = new Date().toLocaleTimeString('es-CO');
+    document.getElementById('d-sync').textContent = t;
+    setStatus('ok', 'Actualizado • ' + t);
+  } catch (e) {
+    setStatus('err', 'Error: ' + e.message);
+  }
+}
+
+setInterval(loadAll, 5 * 60 * 1000);
 loadAll();
 </script>
+
 </body>
 </html>
