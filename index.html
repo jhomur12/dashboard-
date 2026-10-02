@@ -3,354 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Habi TV — Agentes</title>
+  <title>Dashboard Habi TV — Agentes 🎃</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
     :root {
-      --primary: #7C3AED;
-      --primary-light: #8B5CF6;
-      --accent: #f39c12;
-      --success: #27ae60;
-      --warning: #e67e22;
-      --danger: #e74c3c;
-      --dark: #1a1a1a;
-      --card-bg: #ffffff;
-      --border: #e5e7eb;
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --night: #1B0F2E;        /* fondo: noche */
+      --crypt: #2A1745;        /* tarjetas */
+      --crypt-2: #36205A;      /* bordes y filas */
+      --pumpkin: #FF7518;      /* acento principal */
+      --candle: #FFC94A;       /* brillo de vela */
+      --slime: #7CFF6B;        /* cumple */
+      --blood: #FF4D5E;        /* no cumple */
+      --ghost: #F4EEFF;        /* texto principal */
+      --mist: #B9A8D9;         /* texto secundario */
+      --radius: 14px;
     }
 
     html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-      color: var(--text-primary);
+      font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+      background:
+        radial-gradient(circle at 88% -10%, rgba(255,201,74,.18), transparent 38%),
+        radial-gradient(circle at 10% 110%, rgba(255,117,24,.12), transparent 40%),
+        var(--night);
+      color: var(--ghost);
       min-height: 100vh;
       overflow-x: hidden;
-      overflow-y: auto;
     }
 
-    /* TOPBAR */
+    /* ---------- TOPBAR con luna y murciélagos ---------- */
     .topbar {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: #fff;
+      position: sticky; top: 0; z-index: 100;
+      height: 78px;
       padding: 0 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 65px;
-      box-shadow: var(--shadow-lg);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(180deg, #120821 0%, #1F1036 100%);
+      border-bottom: 2px solid var(--pumpkin);
+      box-shadow: 0 6px 24px rgba(255,117,24,.18);
+      overflow: hidden;
     }
-    .topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .moon {
+      position: absolute; right: 420px; top: 10px;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #FFF6CF 0%, var(--candle) 55%, #E59A1E 100%);
+      box-shadow: 0 0 30px 8px rgba(255,201,74,.35);
+      opacity: .9;
     }
+    .bats { position: absolute; inset: 0; pointer-events: none; }
+    .bat {
+      position: absolute; font-size: 20px; left: -40px;
+      animation: fly 14s linear infinite;
+      filter: drop-shadow(0 0 4px rgba(0,0,0,.6));
+    }
+    .bat:nth-child(1) { top: 10px; animation-delay: 0s; }
+    .bat:nth-child(2) { top: 40px; animation-delay: 5s; font-size: 16px; }
+    .bat:nth-child(3) { top: 22px; animation-delay: 9s; font-size: 14px; }
+    @keyframes fly {
+      0%   { transform: translateX(0) translateY(0); }
+      25%  { transform: translateX(25vw) translateY(-8px); }
+      50%  { transform: translateX(50vw) translateY(6px); }
+      75%  { transform: translateX(75vw) translateY(-6px); }
+      100% { transform: translateX(105vw) translateY(0); }
+    }
+
+    .topbar-brand { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
     .topbar-logo {
-      width: 45px;
-      height: 45px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 24px;
-      color: #fff;
-    }
-    .topbar-title {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      justify-content: center;
+      width: 52px; height: 52px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 34px;
+      background: rgba(255,117,24,.15);
+      border: 2px solid var(--pumpkin);
     }
     .topbar-title h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #fff;
-      margin: 0;
-      line-height: 1;
+      font-family: 'Creepster', 'Nunito', cursive;
+      font-size: 42px; font-weight: 400; line-height: .95;
+      letter-spacing: .04em;
+      color: var(--pumpkin);
+      text-shadow: 0 0 14px rgba(255,117,24,.55), 0 3px 0 #5A1E00;
     }
-    .topbar-title p {
-      font-size: 12px;
-      color: rgba(255,255,255,0.8);
-      margin: 0;
-      line-height: 1;
-    }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .clock {
-      font-size: 16px;
-      color: rgba(255,255,255,0.9);
-      font-weight: 600;
-      font-family: 'SF Mono', Monaco, monospace;
-    }
+    .topbar-title p { font-size: 13px; color: var(--mist); font-weight: 700; margin-top: 2px; }
+
+    .topbar-right { display: flex; align-items: center; gap: 18px; position: relative; z-index: 1; }
+    .clock { font-size: 17px; font-weight: 800; color: var(--candle); font-variant-numeric: tabular-nums; }
     .status-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #27ae60;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--slime);
+      box-shadow: 0 0 12px var(--slime);
       animation: pulse 2s infinite;
-      box-shadow: 0 0 10px rgba(39,174,96,0.5);
     }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+
     .btn {
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s;
-      text-transform: uppercase;
+      padding: 8px 14px; border-radius: 999px;
+      font: 800 13px 'Nunito', sans-serif;
+      cursor: pointer; transition: background .2s, transform .2s;
     }
     .btn-light {
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
+      background: var(--pumpkin); color: #2A0E00; border: 2px solid #FF9A4D;
     }
-    .btn-light:hover {
-      background: rgba(255,255,255,0.3);
-      transform: translateY(-1px);
+    .btn-light:hover { background: #FF8A3A; transform: translateY(-1px); }
+    .btn:focus-visible, .filter-tab:focus-visible, .agent-search:focus-visible {
+      outline: 3px solid var(--candle); outline-offset: 2px;
     }
 
-    /* MAIN */
-    .main {
-      padding: 12px 20px;
-      max-width: 1920px;
-      margin: 0 auto;
-    }
+    /* ---------- MAIN ---------- */
+    .main { padding: 16px 22px 30px; max-width: 1920px; margin: 0 auto; position: relative; z-index: 1; }
 
-    /* HEADER */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      background: var(--card-bg);
-      padding: 10px 12px;
-      border-radius: 8px;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; padding: 12px 18px;
+      background: var(--crypt);
+      border: 1px solid var(--crypt-2);
+      border-radius: var(--radius);
     }
-    .header h2 {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 0;
-    }
+    .header h2 { font-size: 26px; font-weight: 900; color: var(--ghost); }
+    .header h2 span { margin-right: 8px; }
     .header-badge {
-      font-size: 11px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-weight: 700;
-      text-transform: uppercase;
+      font-size: 13px; font-weight: 800;
+      background: rgba(255,117,24,.16); color: var(--candle);
+      border: 1px solid var(--pumpkin);
+      border-radius: 999px; padding: 5px 12px;
     }
 
-    /* FILTERS */
+    /* ---------- FILTROS ---------- */
     .filter-bar {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+      margin-bottom: 12px; padding: 12px 18px;
+      background: var(--crypt);
+      border: 1px solid var(--crypt-2);
+      border-radius: var(--radius);
     }
-    .filter-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .filter-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .filter-tabs {
-      display: flex;
-      gap: 6px;
-    }
+    .filter-group { display: flex; align-items: center; gap: 8px; }
+    .filter-label { font-size: 13px; font-weight: 800; color: var(--mist); }
+    .filter-tabs { display: flex; gap: 6px; }
     .filter-tab {
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
+      padding: 6px 12px; border-radius: 999px;
+      font: 800 12px 'Nunito', sans-serif;
       cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--card-bg);
-      color: var(--text-secondary);
-      transition: all 0.3s;
-      text-transform: uppercase;
+      border: 1px solid var(--crypt-2);
+      background: #22123A; color: var(--mist);
+      transition: border-color .2s, color .2s, background .2s;
     }
-    .filter-tab:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
+    .filter-tab:hover { border-color: var(--pumpkin); color: var(--ghost); }
     .filter-tab.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-      box-shadow: 0 2px 4px rgba(124,58,237,0.2);
+      background: var(--pumpkin); border-color: var(--pumpkin); color: #2A0E00;
+      box-shadow: 0 0 12px rgba(255,117,24,.45);
     }
-    .agent-count {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--text-secondary);
-      font-weight: 700;
-    }
+    .agent-count { margin-left: auto; font-size: 14px; font-weight: 800; color: var(--candle); }
 
-    /* AGENT SEARCH */
     .agent-search {
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 5px 10px;
-      font-size: 12px;
+      width: 260px; padding: 8px 14px;
+      border-radius: 999px; border: 1px solid var(--crypt-2);
+      background: #22123A; color: var(--ghost);
+      font: 700 14px 'Nunito', sans-serif;
       outline: none;
-      width: 250px;
-      transition: all 0.3s;
-      font-weight: 600;
     }
-    .agent-search:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(124,58,237,0.1);
-    }
+    .agent-search::placeholder { color: #8C7AAE; }
+    .agent-search:focus { border-color: var(--pumpkin); }
 
-    /* TABLE */
+    /* ---------- TABLA con telaraña ---------- */
     .table-container {
-      background: var(--card-bg);
-      border-radius: 8px;
+      position: relative;
+      background: var(--crypt);
+      border: 1px solid var(--crypt-2);
+      border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .web {
+      position: fixed; left: 0; bottom: 0; width: 160px; height: 160px;
+      pointer-events: none; opacity: .22; z-index: 0; transform: scale(-1, -1);
     }
+    table { width: 100%; border-collapse: collapse; position: relative; z-index: 1; }
     th {
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 10px 8px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      text-align: left;
-      border-bottom: 2px solid var(--primary);
+      font-size: 15px; font-weight: 900; color: #2A0E00;
+      padding: 12px 10px; text-align: left;
+      background: linear-gradient(180deg, #FF8A3A 0%, var(--pumpkin) 100%);
     }
     th.r { text-align: right; }
     td {
-      padding: 10px 8px;
-      font-size: 15px;
-      color: var(--text-secondary);
-      border-bottom: 1px solid #f0f0f0;
-      font-weight: 600;
+      padding: 11px 10px; font-size: 16px; font-weight: 700;
+      color: var(--mist);
+      border-bottom: 1px solid var(--crypt-2);
+      font-variant-numeric: tabular-nums;
     }
-    tr:hover td {
-      background: rgba(124,58,237,0.02);
-    }
+    tbody tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+    tbody tr:hover td { background: rgba(255,117,24,.07); }
     tr:last-child td { border-bottom: none; }
     td.r { text-align: right; }
-    td.key {
-      color: var(--text-primary);
-      font-weight: 700;
-      font-size: 16px;
-    }
+    td.key { color: var(--ghost); font-weight: 800; font-size: 17px; }
 
-    /* BADGES */
+    /* ---------- BADGES ---------- */
     .badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      border-radius: 4px;
-      padding: 2px 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 800;
+      border-radius: 999px; padding: 3px 10px;
     }
-    .badge-front {
-      background: #fff4e6;
-      color: #f39c12;
-      border: 1px solid #ffd699;
+    .badge-front    { background: rgba(255,117,24,.16); color: #FFA05C; border: 1px solid rgba(255,117,24,.55); }
+    .badge-scraping { background: rgba(124,255,107,.12); color: var(--slime); border: 1px solid rgba(124,255,107,.45); }
+    .badge-si       { background: rgba(124,255,107,.12); color: var(--slime); border: 1px solid rgba(124,255,107,.45); }
+    .badge-no       { background: rgba(255,77,94,.14); color: #FF8A96; border: 1px solid rgba(255,77,94,.5); }
+
+    /* ---------- % CUMPLIMIENTO con barra de calabaza ---------- */
+    .pct-cell { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+    .pct-track {
+      width: 120px; height: 10px; border-radius: 999px;
+      background: #1B0F2E; border: 1px solid var(--crypt-2);
+      overflow: hidden;
     }
-    .badge-scraping {
-      background: #e8f5e9;
-      color: #27ae60;
-      border: 1px solid #c8e6c9;
+    .pct-fill { height: 100%; border-radius: 999px; }
+    .pct-text { font-weight: 900; font-size: 17px; min-width: 70px; text-align: right; }
+    .pct-green  { color: var(--slime); }
+    .pct-yellow { color: var(--candle); }
+    .pct-red    { color: var(--blood); }
+    .fill-green  { background: linear-gradient(90deg, #3FBF3A, var(--slime)); }
+    .fill-yellow { background: linear-gradient(90deg, #E59A1E, var(--candle)); }
+    .fill-red    { background: linear-gradient(90deg, #B3263A, var(--blood)); }
+    .icon { width: 22px; text-align: center; font-size: 18px; }
+
+
+    /* ---------- CALABAZA EN COMPLETADAS ---------- */
+    .comp-wrap { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; position: relative; }
+    .pk {
+      display: inline-block; line-height: 1;
+      font-size: calc(24px * var(--s, 1));
+      filter: saturate(.55) brightness(.8);
+      transition: font-size .8s ease, filter .8s ease;
     }
-    .badge-si {
-      background: #e8f5e9;
-      color: #27ae60;
-      border: 1px solid #c8e6c9;
-      font-size: 10px;
+    .pk.lit {
+      filter: drop-shadow(0 0 6px var(--candle)) drop-shadow(0 0 14px var(--pumpkin));
+      animation: flicker 2.6s ease-in-out infinite;
     }
-    .badge-no {
-      background: #ffebee;
-      color: #e74c3c;
-      border: 1px solid #ffcdd2;
-      font-size: 10px;
+    .pk.pop { animation: pkPop 1.2s cubic-bezier(.3, 1.6, .5, 1); }
+    @keyframes pkPop {
+      0%   { transform: scale(1) rotate(0); }
+      30%  { transform: scale(2) rotate(-16deg) translateY(-6px); }
+      55%  { transform: scale(1.45) rotate(12deg); }
+      80%  { transform: scale(1.15) rotate(-4deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    @keyframes flicker {
+      0%, 100% { filter: drop-shadow(0 0 6px var(--candle)) drop-shadow(0 0 14px var(--pumpkin)); }
+      45%      { filter: drop-shadow(0 0 3px var(--candle)) drop-shadow(0 0 8px var(--pumpkin)); }
+      60%      { filter: drop-shadow(0 0 8px var(--candle)) drop-shadow(0 0 18px var(--pumpkin)); }
+    }
+    .comp-num { min-width: 34px; display: inline-block; }
+    .comp-num.counting { color: var(--candle); font-weight: 900; }
+    .pk-plus {
+      position: absolute; right: -4px; top: -10px;
+      font-weight: 900; font-size: 15px; color: var(--candle); white-space: nowrap;
+      text-shadow: 0 0 8px rgba(255,117,24,.85);
+      animation: floatUp 2s ease-out forwards; pointer-events: none;
+    }
+    .pk-plus.meta { color: var(--slime); text-shadow: 0 0 8px rgba(124,255,107,.8); font-size: 16px; }
+    @keyframes floatUp {
+      0%   { opacity: 0; transform: translateY(8px); }
+      15%  { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-34px); }
+    }
+    tbody tr.row-grow td { animation: rowGlow 2.4s ease-out; }
+    @keyframes rowGlow { 0% { background: rgba(255,117,24,.3); } 100% { background: transparent; } }
+
+    .empty-state { text-align: center; padding: 24px 16px; color: var(--mist); font-size: 15px; }
+
+    /* ---------- LEYENDA ---------- */
+    .legend {
+      display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+      margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--mist);
     }
 
-    /* PERCENTAGE COLORS */
-    .pct-text {
-      font-weight: 700;
-      font-size: 16px;
-    }
-    .pct-green { color: var(--success); }
-    .pct-yellow { color: var(--warning); }
-    .pct-red { color: var(--danger); }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: var(--night); }
+    ::-webkit-scrollbar-thumb { background: var(--pumpkin); border-radius: 6px; }
 
-    /* EMPTY STATE */
-    .empty-state {
-      text-align: center;
-      padding: 24px 16px;
-      color: var(--text-secondary);
-      font-size: 14px;
+    @media (max-width: 900px) {
+      .moon { right: 180px; }
+      .topbar-title h1 { font-size: 32px; }
+      .pct-track { width: 70px; }
+      .agent-search { width: 100%; }
     }
-
-    /* SCROLLBAR STYLING */
-    ::-webkit-scrollbar {
-      width: 12px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f3f4f6;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 6px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary-light);
+    @media (prefers-reduced-motion: reduce) {
+      .bat, .status-dot, .pk.lit, .pk.pop, .pk-plus, tbody tr.row-grow td { animation: none; }
+      .pk-plus { opacity: 1; position: static; }
+      .bat { display: none; }
     }
   </style>
 </head>
 <body>
 
 <div class="topbar">
+  <div class="moon" aria-hidden="true"></div>
+  <div class="bats" aria-hidden="true">
+    <span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span>
+  </div>
   <div class="topbar-brand">
-    <div class="topbar-logo">🏠</div>
+    <div class="topbar-logo" aria-hidden="true">🎃</div>
     <div class="topbar-title">
       <h1>HABI</h1>
-      <p>Productividad en Tiempo Real</p>
+      <p>Productividad en tiempo real</p>
     </div>
   </div>
   <div class="topbar-right">
-    <div class="status-dot"></div>
+    <div class="status-dot" title="Conectado"></div>
     <span class="clock" id="clock">—:—:—</span>
     <button class="btn btn-light" onclick="loadAll()">↻ Actualizar</button>
   </div>
@@ -358,15 +315,15 @@
 
 <div class="main">
   <div class="header">
-    <h2>📊 Gestión por Agente</h2>
+    <h2><span aria-hidden="true">👻</span>Gestión por agente</h2>
     <span class="header-badge" id="agent-date-badge">—</span>
   </div>
 
   <div class="filter-bar">
-    <input class="agent-search" id="agent-search" type="text" placeholder="Buscar agente…" oninput="renderAgents()">
-    
+    <input class="agent-search" id="agent-search" type="text" placeholder="🔮 Buscar agente…" aria-label="Buscar agente" oninput="renderAgents()">
+
     <div class="filter-group">
-      <span class="filter-label">Skill:</span>
+      <span class="filter-label">Skill</span>
       <div class="filter-tabs">
         <button class="filter-tab active" onclick="filterSkillAgent('all', this)">Todos</button>
         <button class="filter-tab" onclick="filterSkillAgent('FRONT', this)">Front</button>
@@ -375,11 +332,11 @@
     </div>
 
     <div class="filter-group">
-      <span class="filter-label">Asistencia:</span>
+      <span class="filter-label">Asistencia</span>
       <div class="filter-tabs">
         <button class="filter-tab active" onclick="filterAsistente('all', this)">Todos</button>
-        <button class="filter-tab" onclick="filterAsistente('SI', this)">✓ Asisten</button>
-        <button class="filter-tab" onclick="filterAsistente('NO', this)">✗ Ausentes</button>
+        <button class="filter-tab" onclick="filterAsistente('SI', this)">🧛 Asisten</button>
+        <button class="filter-tab" onclick="filterAsistente('NO', this)">👻 Ausentes</button>
       </div>
     </div>
 
@@ -387,6 +344,12 @@
   </div>
 
   <div class="table-container">
+    <svg class="web" viewBox="0 0 100 100" aria-hidden="true">
+      <g fill="none" stroke="#F4EEFF" stroke-width=".8">
+        <path d="M100 0 L0 100 M100 0 L30 100 M100 0 L0 30 M100 0 L60 100 M100 0 L0 60"/>
+        <path d="M80 0 Q82 18 100 20 M60 0 Q64 36 100 40 M40 0 Q46 54 100 60 M20 0 Q28 72 100 80"/>
+      </g>
+    </svg>
     <table>
       <thead>
         <tr>
@@ -401,12 +364,16 @@
       </thead>
       <tbody id="agent-tbody">
         <tr>
-          <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 16px;">
-            ⏳ Cargando agentes…
-          </td>
+          <td colspan="7" class="empty-state">🕯️ Invocando agentes…</td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="legend" aria-label="Convenciones">
+    <span>🎃 Cumple la meta (100% o más)</span>
+    <span>🕯️ Cerca (80% a 99%)</span>
+    <span>💀 Lejos de la meta (menos de 80%)</span>
   </div>
 </div>
 
@@ -416,8 +383,11 @@ const API = 'https://script.google.com/macros/s/AKfycbzSXu4ygecMtbd6jkqa5J2aa4WW
 let agentData = [];
 let agentSkillFilter = 'all';
 let agentAsistFilter = 'all';
+let prevComp = {};      // completadas de la carga anterior, por agente
+let grew = {};          // agentes que subieron en esta carga: { from, d, metaHit }
+let grewTimer = null;
 
-// CLOCK - Actualiza cada segundo
+// RELOJ - se actualiza cada segundo
 setInterval(() => {
   document.getElementById('clock').textContent = new Date().toLocaleString('es-CO', {
     dateStyle: 'short',
@@ -457,34 +427,79 @@ function toPercent(val) {
   return s;
 }
 
+function pctNumber(pct) {
+  return parseFloat(String(pct).replace('%', '').replace(',', '.')) || 0;
+}
+
 function getTrafficColor(pct) {
-  const val = parseFloat(String(pct).replace('%', '')) || 0;
+  const val = pctNumber(pct);
   if (val >= 100) return 'green';
   if (val >= 80) return 'yellow';
   return 'red';
 }
 
+const ICON = { green: '🎃', yellow: '🕯️', red: '💀' };
+
+// Conserva los ceros (0) que antes quedaban en blanco
+function cell(v) { return v === null || v === undefined ? '' : String(v); }
+
 // CARGAR AGENTES
 async function loadAgentes() {
   const r = await fetchSheet('X AGENTE');
   const fecha = r[0] && r[0][2] ? String(r[0][2]) : '—';
-  document.getElementById('agent-date-badge').textContent = fecha;
+  document.getElementById('agent-date-badge').textContent = '🌙 ' + fecha;
 
   agentData = [];
   for (let i = 7; i < r.length; i++) {
     const row = r[i];
     if (!row || !row[1] || String(row[1]).trim() === '') continue;
     agentData.push({
-      skill: String(row[0] || ''),
-      agente: String(row[1] || ''),
-      asiste: String(row[2] || ''),
-      completadas: String(row[3] || ''),
-      meta: String(row[4] || ''),
-      faltan: String(row[5] || ''),
-      pct: String(row[6] || '')
+      skill: cell(row[0]),
+      agente: cell(row[1]),
+      asiste: cell(row[2]),
+      completadas: cell(row[3]),
+      meta: cell(row[4]),
+      faltan: cell(row[5]),
+      pct: cell(row[6])
     });
   }
+  detectGrowth();
   renderAgents();
+}
+
+function agentKey(a) { return a.skill.toUpperCase() + '|' + a.agente.trim().toUpperCase(); }
+
+/* Compara con la carga anterior: quien sumó completadas hace la dinámica de la calabaza */
+function detectGrowth() {
+  const first = Object.keys(prevComp).length === 0;
+  const next = {};
+  grew = {};
+  agentData.forEach(a => {
+    const k = agentKey(a), n = pctNumber(a.completadas), before = prevComp[k];
+    if (!first && before !== undefined && n > before) {
+      const meta = pctNumber(a.meta);
+      grew[k] = { from: before, d: n - before, metaHit: meta > 0 && before < meta && n >= meta };
+    }
+    next[k] = n;
+  });
+  prevComp = next;
+  clearTimeout(grewTimer);
+  if (Object.keys(grew).length) grewTimer = setTimeout(() => { grew = {}; }, 3000);
+}
+
+/* Cuenta desde el valor anterior hasta el nuevo */
+function animateCounts() {
+  document.querySelectorAll('.comp-num[data-from]').forEach(el => {
+    const from = +el.dataset.from, to = +el.dataset.to, t0 = performance.now(), dur = 1300;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = el.dataset.final; return; }
+    el.classList.add('counting');
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur), v = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+      el.textContent = p < 1 ? v : el.dataset.final;
+      if (p < 1) requestAnimationFrame(step); else el.classList.remove('counting');
+    };
+    requestAnimationFrame(step);
+  });
 }
 
 // RENDERIZAR TABLA
@@ -498,29 +513,60 @@ function renderAgents() {
       && (!search || a.agente.toLowerCase().includes(search) || a.skill.toLowerCase().includes(search));
   });
 
-  document.getElementById('agent-count').textContent = `${rows.length} agente${rows.length !== 1 ? 's' : ''}`;
+  document.getElementById('agent-count').textContent = `🦇 ${rows.length} agente${rows.length !== 1 ? 's' : ''}`;
 
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 16px;">Sin resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state">🕸️ Ningún agente coincide con la búsqueda o los filtros.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = rows.map(a => {
     const skillClass = a.skill.toUpperCase() === 'FRONT' ? 'badge-front' : 'badge-scraping';
-    const asisColor = a.asiste.toUpperCase() === 'SI' ? 'badge-si' : 'badge-no';
+    const asisSi = a.asiste.toUpperCase() === 'SI';
     const pctVal = toPercent(a.pct);
     const pctCls = getTrafficColor(pctVal);
+    const width = Math.max(0, Math.min(100, pctNumber(pctVal)));
+    const g = grew[agentKey(a)];
+    const scale = (0.6 + 0.5 * width / 100).toFixed(2);
+    const pkClass = 'pk' + (width >= 100 ? ' lit' : '') + (g ? ' pop' : '');
+    const compCell = `<span class="comp-wrap">
+        <span class="${pkClass}" style="--s:${scale}" aria-hidden="true">🎃</span>
+        <span class="comp-num"${g ? ` data-from="${g.from}" data-to="${pctNumber(a.completadas)}" data-final="${a.completadas}"` : ''}>${g ? g.from : a.completadas}</span>
+        ${g ? `<span class="pk-plus${g.metaHit ? ' meta' : ''}">${g.metaHit ? '¡Meta! 🎃' : '+' + g.d}</span>` : ''}
+      </span>`;
 
-    return `<tr>
+    return `<tr${g ? ' class="row-grow"' : ''}>
       <td><span class="badge ${skillClass}">${a.skill}</span></td>
       <td class="key">${a.agente}</td>
-      <td class="r"><span class="badge ${asisColor}">${a.asiste}</span></td>
-      <td class="r">${a.completadas}</td>
+      <td class="r"><span class="badge ${asisSi ? 'badge-si' : 'badge-no'}">${asisSi ? '🧛' : '👻'} ${a.asiste}</span></td>
+      <td class="r">${compCell}</td>
       <td class="r">${a.meta}</td>
       <td class="r">${a.faltan}</td>
-      <td class="r pct-text pct-${pctCls}">${pctVal}</td>
+      <td class="r">
+        <div class="pct-cell">
+          <div class="pct-track"><div class="pct-fill fill-${pctCls}" style="width:${width}%"></div></div>
+          <span class="pct-text pct-${pctCls}">${pctVal}</span>
+          <span class="icon" aria-hidden="true">${ICON[pctCls]}</span>
+        </div>
+      </td>
     </tr>`;
   }).join('');
+  animateCounts();
+}
+
+// MODO DE PRUEBA: abre el archivo con ?demo al final de la dirección para ver la dinámica
+// sin esperar la actualización real (suma completadas al azar cada 6 segundos).
+if (location.search.indexOf('demo') !== -1) {
+  setInterval(() => {
+    if (!agentData.length) return;
+    agentData.forEach(a => { prevComp[agentKey(a)] = pctNumber(a.completadas); });
+    const a = agentData[Math.floor(Math.random() * agentData.length)];
+    const n = pctNumber(a.completadas) + 1 + Math.floor(Math.random() * 3), meta = pctNumber(a.meta);
+    a.completadas = String(n);
+    if (meta > 0) { a.faltan = String(Math.max(0, meta - n)); a.pct = String(n / meta); }
+    const snapshot = Object.assign({}, prevComp);
+    prevComp = snapshot; detectGrowth(); renderAgents();
+  }, 6000);
 }
 
 // CARGAR DATOS
@@ -529,6 +575,8 @@ async function loadAll() {
     await loadAgentes();
   } catch (e) {
     console.error('Error:', e);
+    document.getElementById('agent-tbody').innerHTML =
+      `<tr><td colspan="7" class="empty-state">💀 No se pudieron cargar los agentes. Revisa la conexión y pulsa Actualizar.</td></tr>`;
   }
 }
 
